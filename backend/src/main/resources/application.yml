@@ -7,3 +7,6 @@ spring:
 
 server:
   port: 8080
+
+firebase:
+  service-account-path: ${FIREBASE_CREDENTIALS_PATH}
