@@ -9,6 +9,7 @@ import trainfocus.backend.auth.ui.LoginUser;
 import trainfocus.backend.common.ui.ApiResponse;
 import trainfocus.backend.session.application.FocusSessionService;
 import trainfocus.backend.session.application.dto.*;
+import trainfocus.backend.session.domain.FocusSessionStatus;
 import trainfocus.backend.user.domain.User;
 
 @RestController
@@ -72,5 +73,27 @@ public class FocusSessionController {
             @LoginUser User user
     ) {
         return ResponseEntity.ok(ApiResponse.of(focusSessionService.findActive(user)));
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<ApiResponse<FocusSessionHistoryPageResponse>> history(
+            @LoginUser User user,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) FocusSessionStatus status
+    ) {
+        return ResponseEntity.ok(
+                ApiResponse.of(focusSessionService.findHistory(user, page, size, status))
+        );
+    }
+
+    @GetMapping("/{id}/detail")
+    public ResponseEntity<ApiResponse<FocusSessionHistoryDetailResponse>> detail(
+            @LoginUser User user,
+            @PathVariable Long id
+    ) {
+        return ResponseEntity.ok(
+                ApiResponse.of(focusSessionService.findDetail(user, id))
+        );
     }
 }
