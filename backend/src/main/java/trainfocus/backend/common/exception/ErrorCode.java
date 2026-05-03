@@ -29,7 +29,17 @@ public enum ErrorCode {
 
     // ROUTE
     ROUTE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 노선이 등록되어 있지 않습니다."),
-    ROUTE_SAME_STATION(HttpStatus.BAD_REQUEST, "출발역과 도착역이 같을 수 없습니다.");
+    ROUTE_SAME_STATION(HttpStatus.BAD_REQUEST, "출발역과 도착역이 같을 수 없습니다."),
+
+    // SESSION
+    SESSION_ALREADY_ACTIVE(HttpStatus.CONFLICT, "이미 활성화된 집중 세션이 존재합니다."),
+    SESSION_DELAY_NEGATIVE(HttpStatus.BAD_REQUEST, "지연시간이 음수가 될 수 없습니다."),
+    SESSION_NOT_FOUND(HttpStatus.NOT_FOUND, "세션을 찾을 수 없습니다."),
+    SESSION_FORBIDDEN(HttpStatus.FORBIDDEN, "타인의 세션에 접근할 수 없습니다."),
+    SESSION_ALREADY_PAUSED(HttpStatus.UNPROCESSABLE_ENTITY, "이미 하차 상태입니다."),
+    SESSION_ALREADY_RUNNING(HttpStatus.UNPROCESSABLE_ENTITY, "이미 진행 중입니다."),
+    SESSION_ALREADY_ENDED(HttpStatus.UNPROCESSABLE_ENTITY, "이미 종료된 세션입니다."),
+    SESSION_TARGET_NOT_REACHED(HttpStatus.UNPROCESSABLE_ENTITY, "목표 시간에 도달하지 않았습니다.");
 
     private final HttpStatus status;
     private final String message;

@@ -1,0 +1,28 @@
+package trainfocus.backend.session.domain.repository;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import trainfocus.backend.session.domain.FocusSession;
+import trainfocus.backend.session.domain.FocusSessionStatus;
+import trainfocus.backend.user.domain.User;
+
+import java.util.Collection;
+import java.util.Optional;
+
+public interface FocusSessionRepository extends JpaRepository<FocusSession, Long> {
+
+    boolean existsByUserAndStatusIn(User user, Collection<FocusSessionStatus> status);
+
+    Optional<FocusSession> findFirstByUserAndStatusIn(User user, Collection<FocusSessionStatus> statuses);
+
+    @EntityGraph(attributePaths = {"departureStation", "arrivalStation"})
+    Page<FocusSession> findByUserAndStatusIn(User user, Collection<FocusSessionStatus> statues, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"legs", "departureStation", "arrivalStation"})
+    @Query("SELECT fs from FocusSession fs where fs.id = :id")
+    Optional<FocusSession> findDetailById(@Param("id") Long id);
+}

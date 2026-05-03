@@ -12,6 +12,7 @@ import trainfocus.backend.station.domain.Station;
 @Table(
         name = "routes",
         uniqueConstraints = @UniqueConstraint(
+                name = "uk_routes_dep_arr",
                 columnNames = {"departure_station_id", "arrival_station_id"}
         )
 )
