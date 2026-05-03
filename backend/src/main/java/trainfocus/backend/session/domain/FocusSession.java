@@ -88,6 +88,7 @@ public class FocusSession extends BaseEntity {
         this.totalTargetMinutes = totalMinutes;
         this.startedAt = startedAt;
         this.plannedEndAt = startedAt.plusMinutes(totalMinutes);
+        this.legs.add(Leg.start(this, 1, startedAt));
     }
 
     public void pause(LocalDateTime now) {
