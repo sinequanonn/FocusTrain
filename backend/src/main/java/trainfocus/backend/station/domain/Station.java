@@ -18,4 +18,12 @@ public class Station extends BaseEntity {
 
     @Column(unique = true, length = 50, nullable = false)
     private String name;
+
+    private Station(String name) {
+        this.name = name;
+    }
+
+    public static Station createNewStation(String name) {
+        return new Station(name);
+    }
 }

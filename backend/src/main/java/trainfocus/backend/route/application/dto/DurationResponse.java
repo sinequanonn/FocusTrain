@@ -10,7 +10,7 @@ public record DurationResponse(
     public static DurationResponse from(Route route) {
         return new DurationResponse(
                 route.getDepartureStation().getId(),
-                route.getDepartureStation().getId(),
+                route.getArrivalStation().getId(),
                 route.getDurationMinutes()
         );
     }

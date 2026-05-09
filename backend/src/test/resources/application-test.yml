@@ -1,0 +1,15 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+
+# 테스트 환경에서는 실제 Firebase 키 파일을 로드하지 않는다.
+# FirebaseConfig는 firebase.enabled=true 일 때만 활성화된다.
+firebase:
+  enabled: false
+
+logging:
+  level:
+    org.hibernate.sql: warn
+    trainfocus.backend: info

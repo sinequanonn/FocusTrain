@@ -62,9 +62,9 @@ public class FocusSession extends BaseEntity {
     @OrderBy("legNumber ASC")
     private final List<Leg> legs = new ArrayList<>();
 
-    public static FocusSession create(User user, Station departure, Station arrival,
-                                     int baseDurationMinutes, int delayMinutes,
-                                     LocalDateTime startedAt) {
+    public static FocusSession createNewFocusSession(User user, Station departure, Station arrival,
+                                                     int baseDurationMinutes, int delayMinutes,
+                                                     LocalDateTime startedAt) {
         return new FocusSession(user, departure, arrival,
                 baseDurationMinutes, delayMinutes, startedAt);
     }
@@ -72,8 +72,12 @@ public class FocusSession extends BaseEntity {
     private FocusSession(User user, Station departure, Station arrival,
                          int baseDurationMinutes, int delayMinutes,
                          LocalDateTime startedAt) {
-        if (departure.getId().equals(arrival.getId())) {
+        if (departure.getId() != null
+                && departure.getId().equals(arrival.getId())) {
             throw new BusinessException(ErrorCode.ROUTE_SAME_STATION);
+        }
+        if (baseDurationMinutes <= 0) {
+            throw new BusinessException(ErrorCode.COMMON_INVALID_PARAMETER);
         }
         if (delayMinutes < 0) {
             throw new BusinessException(ErrorCode.SESSION_DELAY_NEGATIVE);
