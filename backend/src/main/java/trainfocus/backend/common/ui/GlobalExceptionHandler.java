@@ -3,9 +3,12 @@ package trainfocus.backend.common.ui;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import trainfocus.backend.common.exception.BusinessException;
 import trainfocus.backend.common.exception.ErrorCode;
 
@@ -58,6 +61,34 @@ public class GlobalExceptionHandler {
                 request.getRequestURI()
         );
         return ResponseEntity.status(ErrorCode.COMMON_INVALID_PARAMETER.getStatus()).body(response);
+    }
+
+    @ExceptionHandler({
+            MissingServletRequestParameterException.class,
+            MethodArgumentTypeMismatchException.class
+    })
+    public ResponseEntity<ErrorResponse> handleInvalidRequestParameter(
+            Exception e, HttpServletRequest request) {
+        log.warn("잘못된 요청 파라미터: {}", e.getMessage());
+        ErrorResponse response = new ErrorResponse(
+                ErrorCode.COMMON_INVALID_PARAMETER.getCode(),
+                ErrorCode.COMMON_INVALID_PARAMETER.getMessage(),
+                LocalDateTime.now(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(ErrorCode.COMMON_INVALID_PARAMETER.getStatus()).body(response);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleMethodNotSupported(
+            HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
+        ErrorResponse response = new ErrorResponse(
+                ErrorCode.COMMON_METHOD_NOT_ALLOWED.getCode(),
+                ErrorCode.COMMON_METHOD_NOT_ALLOWED.getMessage(),
+                LocalDateTime.now(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(ErrorCode.COMMON_METHOD_NOT_ALLOWED.getStatus()).body(response);
     }
 
     @ExceptionHandler(Exception.class)
