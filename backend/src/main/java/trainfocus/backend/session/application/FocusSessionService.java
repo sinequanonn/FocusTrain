@@ -52,7 +52,7 @@ public class FocusSessionService {
                 .findRouteByDepartureStationIdAndArrivalStationId(departure.getId(), arrival.getId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.ROUTE_NOT_FOUND));
 
-        FocusSession session = FocusSession.create(
+        FocusSession session = FocusSession.createNewFocusSession(
                 user, departure, arrival,
                 route.getDurationMinutes(),
                 request.delayMinutes(),
