@@ -1,0 +1,14 @@
+import { apiClient } from './client';
+
+export interface Station {
+  id: number;
+  name: string;
+}
+
+export interface StationsResponse {
+  stations: Station[];
+}
+
+export async function getStations(): Promise<StationsResponse> {
+  return apiClient<StationsResponse>('/api/stations');
+}

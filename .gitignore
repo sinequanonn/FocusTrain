@@ -1,0 +1,39 @@
+# ===== OS =====
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== IDE / Editor =====
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.iml
+*.swp
+*.swo
+*~
+
+# ===== Claude / AI agents =====
+.claude/
+.cursor/
+.aider*
+CLAUDE.md
+AGENTS.md
+
+# ===== Env files (전역 가드) =====
+.env
+.env.local
+.env*.local
+!.env.example
+!.env*.example
+
+# ===== Logs =====
+*.log
+
+# ===== Misc =====
+*.pem
+*.key
+*.p12
+*-credentials*.json
+*serviceAccount*.json
+firebase-adminsdk-*.json

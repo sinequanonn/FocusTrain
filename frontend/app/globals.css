@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f6f6f6;
+  --foreground: #333333;
+  --woowa-mint: #2ac1bc;
+  --woowa-mint-light: #ebfbfa;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-mint: var(--woowa-mint);
+  --color-mint-light: var(--woowa-mint-light);
+  --font-sans: var(--font-noto-sans-kr);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-noto-sans-kr), "Noto Sans KR", sans-serif;
+}
