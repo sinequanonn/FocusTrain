@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+firebase:
+  service-account-path: ${FIREBASE_CREDENTIALS_PATH}
+
+logging:
+  level:
+    org.hibernate.sql: warn
+    trainfocus.backend: info
