@@ -1,0 +1,51 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: focustrain-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: focustrain
+      MYSQL_USER: focustrain
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      TZ: Asia/Seoul
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone=+09:00
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - focustrain
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    image: ${BACKEND_IMAGE}
+    container_name: focustrain-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/focustrain?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      SPRING_DATASOURCE_USERNAME: focustrain
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      FIREBASE_CREDENTIALS_PATH: /app/firebase.json
+      TZ: Asia/Seoul
+    volumes:
+      - /opt/focustrain/firebase.json:/app/firebase.json:ro
+    ports:
+      - "8080:8080"
+    networks:
+      - focustrain
+
+networks:
+  focustrain:
+
+volumes:
+  mysql_data:
