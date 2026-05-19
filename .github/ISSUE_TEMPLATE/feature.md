@@ -1,6 +1,6 @@
 ---
 name: ✨ Feature
-about: 
+about: 새 기능 추가
 title: "feat: "
 labels: feature
 assignees: ''

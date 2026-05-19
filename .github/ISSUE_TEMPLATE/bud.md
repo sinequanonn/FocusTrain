@@ -1,5 +1,5 @@
 ---
-name: 🐛 Bug
+name: 🐛 BugFix
 about: 버그 리포트
 title: "fix: "
 labels: bug
