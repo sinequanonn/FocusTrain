@@ -10,6 +10,7 @@ server:
 
 firebase:
   service-account-path: ${FIREBASE_CREDENTIALS_PATH}
+
 management:
   endpoints:
     web:
