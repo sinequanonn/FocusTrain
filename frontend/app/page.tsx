@@ -259,8 +259,20 @@ export default function HomePage() {
         <div className="flex items-end gap-3">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-              <span className="text-[#2AC1BC]">Train</span>{' '}
-              <span className="text-gray-800">Focus</span>
+              {isFocusScreen ? (
+                <span>
+                  <span className="text-[#2AC1BC]">Focus</span>{' '}
+                  <span className="text-gray-800">Train</span>
+                </span>
+              ) : (
+                <button
+                  onClick={() => router.push('/')}
+                  className="hover:opacity-70 transition-opacity"
+                >
+                  <span className="text-[#2AC1BC]">Focus</span>{' '}
+                  <span className="text-gray-800">Train</span>
+                </button>
+              )}
             </h1>
             {me && !isFocusScreen && (
               <p className="mt-1 text-sm text-gray-500">

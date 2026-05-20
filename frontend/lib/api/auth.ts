@@ -23,3 +23,10 @@ export async function login(idToken: string): Promise<LoginResponse> {
 export async function getMe(): Promise<MeResponse> {
   return apiClient<MeResponse>('/api/auth/me');
 }
+
+export async function updateNickname(nickname: string): Promise<MeResponse> {
+  return apiClient<MeResponse>('/api/users/me', {
+    method: 'PATCH',
+    body: JSON.stringify({ nickname }),
+  });
+}
