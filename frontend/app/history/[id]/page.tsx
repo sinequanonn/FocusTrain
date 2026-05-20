@@ -65,48 +65,48 @@ export default function HistoryDetailPage({
   }, [user, id]);
 
   if (loading || !user) {
-    return <main className="p-8 text-gray-500">로딩 중...</main>;
+    return <main className="p-8 text-gray-500 dark:text-gray-400">로딩 중...</main>;
   }
 
   return (
     <main className="mx-auto max-w-3xl p-6 md:p-10">
       <Link
         href="/history"
-        className="mb-2 inline-block text-xs text-gray-400 hover:text-[#2AC1BC]"
+        className="mb-2 inline-block text-xs text-gray-400 hover:text-[#2AC1BC] dark:text-gray-500"
       >
         ← 이동 기록 목록
       </Link>
 
       {error && (
-        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
           {error}
         </div>
       )}
 
       {!data ? (
-        <p className="text-sm text-gray-400">불러오는 중...</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500">불러오는 중...</p>
       ) : (
         <>
           {/* 세션 요약 */}
-          <section className="mb-6 rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
+          <section className="mb-6 rounded-3xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
             <div className="mb-4 flex items-center gap-2">
               <span
                 className={`rounded-full px-3 py-1 text-xs font-bold ${
                   data.session.status === 'COMPLETED'
-                    ? 'bg-[#EBFBFA] text-[#2AC1BC]'
-                    : 'bg-gray-100 text-gray-500'
+                    ? 'bg-[#EBFBFA] text-[#2AC1BC] dark:bg-[#14302f]'
+                    : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
                 }`}
               >
                 {data.session.status === 'COMPLETED' ? '완료' : '중단'}
               </span>
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-gray-400 dark:text-gray-500">
                 #{data.session.sessionId}
               </span>
             </div>
 
-            <h1 className="mb-6 text-2xl md:text-3xl font-bold">
+            <h1 className="mb-6 text-2xl md:text-3xl font-bold dark:text-gray-100">
               {data.session.departure.name}{' '}
-              <span className="text-gray-300">→</span>{' '}
+              <span className="text-gray-300 dark:text-gray-600">→</span>{' '}
               {data.session.arrival.name}
             </h1>
 
@@ -145,26 +145,26 @@ export default function HistoryDetailPage({
           </section>
 
           {/* Leg 목록 */}
-          <section className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-lg font-bold">탑승 구간 (Legs)</h2>
+          <section className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            <h2 className="mb-4 text-lg font-bold dark:text-gray-100">탑승 구간 (Legs)</h2>
             {data.legs.length === 0 ? (
-              <p className="text-sm italic text-gray-400">구간 정보가 없습니다.</p>
+              <p className="text-sm italic text-gray-400 dark:text-gray-500">구간 정보가 없습니다.</p>
             ) : (
               <ol className="space-y-2">
                 {data.legs.map((leg) => (
                   <li
                     key={leg.legNumber}
-                    className="flex items-center justify-between rounded-2xl border border-gray-100 bg-gray-50 p-4"
+                    className="flex items-center justify-between rounded-2xl border border-gray-100 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-700"
                   >
                     <div className="flex items-center gap-3">
                       <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#2AC1BC] text-xs font-bold text-white">
                         {leg.legNumber}
                       </span>
                       <div>
-                        <p className="text-sm font-medium text-gray-800">
+                        <p className="text-sm font-medium text-gray-800 dark:text-gray-100">
                           {formatDateTime(leg.startedAt)}
                         </p>
-                        <p className="text-[10px] text-gray-400">
+                        <p className="text-[10px] text-gray-400 dark:text-gray-500">
                           → {leg.endedAt ? formatDateTime(leg.endedAt) : '진행 중'}
                         </p>
                       </div>
@@ -193,11 +193,11 @@ function Stat({
   highlight?: boolean;
 }) {
   return (
-    <div className="rounded-2xl border border-gray-100 bg-gray-50 p-3">
-      <p className="text-[10px] font-bold uppercase text-gray-400">{label}</p>
+    <div className="rounded-2xl border border-gray-100 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-700">
+      <p className="text-[10px] font-bold uppercase text-gray-400 dark:text-gray-500">{label}</p>
       <p
         className={`mt-1 text-base font-bold ${
-          highlight ? 'text-[#2AC1BC]' : 'text-gray-800'
+          highlight ? 'text-[#2AC1BC]' : 'text-gray-800 dark:text-gray-100'
         }`}
       >
         {value}
@@ -209,10 +209,10 @@ function Stat({
 function TimeRow({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <span className="text-[10px] font-bold uppercase text-gray-400">
+      <span className="text-[10px] font-bold uppercase text-gray-400 dark:text-gray-500">
         {label}
       </span>
-      <p className="font-mono text-xs text-gray-700">{value}</p>
+      <p className="font-mono text-xs text-gray-700 dark:text-gray-200">{value}</p>
     </div>
   );
 }

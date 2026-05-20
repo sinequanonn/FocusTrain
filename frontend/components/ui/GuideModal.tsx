@@ -70,23 +70,23 @@ export function GuideModal({ open, onClose }: Props) {
       onClick={handleClose}
     >
       <div
-        className="relative w-full max-w-md rounded-3xl bg-white p-8 shadow-xl"
+        className="relative w-full max-w-md rounded-3xl bg-white p-8 shadow-xl dark:bg-gray-800"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={handleClose}
-          className="absolute right-6 top-6 text-2xl text-gray-300 transition hover:text-gray-500"
+          className="absolute right-6 top-6 text-2xl text-gray-300 transition hover:text-gray-500 dark:text-gray-600 dark:hover:text-gray-400"
           aria-label="닫기"
         >
           ✕
         </button>
 
-        <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EBFBFA] text-2xl">
+        <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EBFBFA] text-2xl dark:bg-[#14302f]">
           {current.icon}
         </div>
 
-        <h3 className="mb-3 text-2xl font-bold">{current.title}</h3>
-        <p className="mb-8 text-sm leading-relaxed text-gray-500">
+        <h3 className="mb-3 text-2xl font-bold dark:text-gray-100">{current.title}</h3>
+        <p className="mb-8 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
           {current.description}
         </p>
 
@@ -112,7 +112,7 @@ export function GuideModal({ open, onClose }: Props) {
               key={i}
               onClick={() => setStep(i)}
               className={`h-2 rounded-full transition-all ${
-                i === step ? 'w-6 bg-[#2AC1BC]' : 'w-2 bg-gray-200'
+                i === step ? 'w-6 bg-[#2AC1BC]' : 'w-2 bg-gray-200 dark:bg-gray-600'
               }`}
               aria-label={`${i + 1}단계로 이동`}
             />
