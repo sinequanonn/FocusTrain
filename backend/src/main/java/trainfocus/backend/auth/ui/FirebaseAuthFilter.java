@@ -37,7 +37,8 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
         }
         String path = request.getRequestURI();
         return path.equals("/api/auth/login")
-                || path.startsWith("/actuator/health");
+                || path.startsWith("/actuator/health")
+                || path.startsWith("/actuator/prometheus");
     }
 
     @Override
