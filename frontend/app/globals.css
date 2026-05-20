@@ -21,3 +21,8 @@ body {
   color: var(--foreground);
   font-family: var(--font-noto-sans-kr), "Noto Sans KR", sans-serif;
 }
+
+/* iOS 모바일 자동 확대 방지 */
+input, select, textarea {
+  font-size: 16px;
+}

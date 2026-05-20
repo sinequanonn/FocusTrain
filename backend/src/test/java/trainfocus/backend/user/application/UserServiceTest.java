@@ -5,9 +5,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import trainfocus.backend.auth.application.dto.MeResponse;
 import trainfocus.backend.auth.firebase.FirebaseUserInfo;
 import trainfocus.backend.common.exception.BusinessException;
 import trainfocus.backend.common.exception.ErrorCode;
+import trainfocus.backend.user.application.dto.UpdateNicknameRequest;
 import trainfocus.backend.user.domain.User;
 import trainfocus.backend.user.domain.repository.UserRepository;
 
@@ -69,5 +71,27 @@ class UserServiceTest {
                 .isInstanceOf(BusinessException.class)
                 .satisfies(e -> assertThat(((BusinessException) e).getErrorCode())
                         .isEqualTo(ErrorCode.USER_NOT_FOUND));
+    }
+
+    @Test
+    void 닉네임_업데이트_성공() {
+        User user = User.createNewUser("uid-1", "a@b.com", "기존닉네임");
+        given(userRepository.existsByNickname("새닉네임")).willReturn(false);
+
+        MeResponse result = userService.updateNickname(new UpdateNicknameRequest("새닉네임"), user);
+
+        assertThat(result.nickname()).isEqualTo("새닉네임");
+    }
+
+    @Test
+    void 닉네임_중복이면_USER_NICKNAME_DUPLICATE_예외() {
+        User user = User.createNewUser("uid-1", "a@b.com", "기존닉네임");
+        given(userRepository.existsByNickname("중복닉네임")).willReturn(true);
+
+        assertThatThrownBy(() -> userService.updateNickname(new UpdateNicknameRequest("중복닉네임"), user))
+                .isInstanceOf(BusinessException.class)
+                .satisfies(e -> assertThat(((BusinessException) e).getErrorCode())
+                        .isEqualTo(ErrorCode.USER_NICKNAME_DUPLICATE));
+        then(userRepository).should(never()).save(any());
     }
 }

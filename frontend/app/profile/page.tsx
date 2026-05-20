@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
-import { getMe, MeResponse } from '@/lib/api/auth';
+import { getMe, updateNickname, MeResponse } from '@/lib/api/auth';
 import { ApiError } from '@/lib/api/client';
 
 function formatDate(iso: string) {
@@ -53,12 +53,17 @@ export default function ProfilePage() {
     setSavedMessage(null);
     setSaving(true);
     try {
-      // TODO: 닉네임 수정 API 연결 (현재 미구현)
-      await new Promise((r) => setTimeout(r, 400)); // 로딩 흉내
-      setOriginalNickname(nickname);
-      setSavedMessage('닉네임이 저장되었습니다. (API 연결 전 — 화면에만 반영)');
+      const updated = await updateNickname(nickname.trim());
+      setMe(updated);
+      setNickname(updated.nickname);
+      setOriginalNickname(updated.nickname);
+      setSavedMessage('닉네임이 저장되었습니다.');
     } catch (e) {
-      if (e instanceof Error) setError(e.message);
+      if (e instanceof ApiError) {
+        setError(e.message);
+      } else if (e instanceof Error) {
+        setError(e.message);
+      }
     } finally {
       setSaving(false);
     }
@@ -73,8 +78,12 @@ export default function ProfilePage() {
     return <main className="p-8 text-gray-500">로딩 중...</main>;
   }
 
+  const NICKNAME_PATTERN = /^[a-zA-Z0-9가-힣_-]+$/;
   const dirty = nickname !== originalNickname;
-  const valid = nickname.trim().length >= 1 && nickname.trim().length <= 50;
+  const valid =
+    nickname.trim().length >= 2 &&
+    nickname.trim().length <= 20 &&
+    NICKNAME_PATTERN.test(nickname.trim());
 
   return (
     <main className="mx-auto max-w-2xl p-6 md:p-10">
@@ -110,9 +119,6 @@ export default function ProfilePage() {
                 🚄
               </div>
               <div>
-                <p className="text-xs font-bold uppercase text-gray-400">
-                  user #{me.userId}
-                </p>
                 <p className="text-base font-bold text-gray-800">{me.email}</p>
                 <p className="text-[10px] text-gray-400">
                   가입일 {formatDate(me.createdAt)}
@@ -128,13 +134,10 @@ export default function ProfilePage() {
                 type="text"
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
-                maxLength={50}
-                placeholder="1~50자"
+                maxLength={20}
+                placeholder="2~20자 · 한글, 영문, 숫자, _, -"
                 className="w-full rounded-lg border border-gray-200 bg-gray-50 p-3 outline-none focus:border-[#2AC1BC]"
               />
-              <p className="mt-1 text-[10px] text-gray-400">
-                다른 사용자에게 표시되지 않으며, 본인 프로필에만 노출됩니다.
-              </p>
             </div>
 
             <div className="flex gap-2">
@@ -154,10 +157,6 @@ export default function ProfilePage() {
               </button>
             </div>
 
-            <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 p-3 text-[11px] text-gray-400">
-              ⚠️ 닉네임 수정 API는 아직 연결되지 않았습니다. 현재는 화면에만
-              반영됩니다.
-            </div>
           </div>
         )}
       </section>

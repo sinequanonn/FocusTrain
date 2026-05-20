@@ -65,4 +65,16 @@ class UserRepositoryTest {
         assertThat(saved.getCreatedAt()).isNotNull();
         assertThat(saved.getUpdatedAt()).isNotNull();
     }
+
+    @Test
+    void 존재하는_닉네임이면_true_반환() {
+        userRepository.save(User.createNewUser("uid-3", "c@b.com", "중복닉네임"));
+
+        assertThat(userRepository.existsByNickname("중복닉네임")).isTrue();
+    }
+
+    @Test
+    void 없는_닉네임이면_false_반환() {
+        assertThat(userRepository.existsByNickname("없는닉네임")).isFalse();
+    }
 }

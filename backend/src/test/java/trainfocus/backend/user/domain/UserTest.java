@@ -14,4 +14,13 @@ class UserTest {
         assertThat(user.getEmail()).isEqualTo("test@example.com");
         assertThat(user.getNickname()).isEqualTo("테스터");
     }
+
+    @Test
+    void 닉네임_업데이트_성공() {
+        User user = User.createNewUser("uid-1", "a@b.com", "기존닉네임");
+
+        user.updateNickname("새닉네임");
+
+        assertThat(user.getNickname()).isEqualTo("새닉네임");
+    }
 }

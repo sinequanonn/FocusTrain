@@ -4,9 +4,11 @@ package trainfocus.backend.user.application;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import trainfocus.backend.auth.application.dto.MeResponse;
 import trainfocus.backend.auth.firebase.FirebaseUserInfo;
 import trainfocus.backend.common.exception.BusinessException;
 import trainfocus.backend.common.exception.ErrorCode;
+import trainfocus.backend.user.application.dto.UpdateNicknameRequest;
 import trainfocus.backend.user.domain.User;
 import trainfocus.backend.user.domain.repository.UserRepository;
 
@@ -33,5 +35,14 @@ public class UserService {
     public User findByFirebaseUid(String firebaseUid) {
         return userRepository.findByFirebaseUid(firebaseUid)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    @Transactional
+    public MeResponse updateNickname(UpdateNicknameRequest request, User user) {
+        if (userRepository.existsByNickname(request.nickname())) {
+            throw new BusinessException(ErrorCode.USER_NICKNAME_DUPLICATE);
+        }
+        user.updateNickname(request.nickname());
+        return MeResponse.from(user);
     }
 }
