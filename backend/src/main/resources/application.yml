@@ -10,3 +10,14 @@ server:
 
 firebase:
   service-account-path: ${FIREBASE_CREDENTIALS_PATH}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus
+  endpoint:
+    health:
+      show-details: never
+  metrics:
+    tags:
+      application: focustrain-backend
