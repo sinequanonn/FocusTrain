@@ -34,5 +34,9 @@ public class User extends BaseEntity {
     public static User createNewUser(String firebaseUid, String email, String nickname) {
         return new User(firebaseUid, email, nickname);
     }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }
 
