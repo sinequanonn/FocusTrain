@@ -246,7 +246,7 @@ export default function HomePage() {
   }
 
   if (loading || !user) {
-    return <main className="p-8 text-gray-500">로딩 중...</main>;
+    return <main className="p-8 text-gray-500 dark:text-gray-400">로딩 중...</main>;
   }
 
   const isRunning = session?.status === 'RUNNING';
@@ -262,7 +262,7 @@ export default function HomePage() {
               {isFocusScreen ? (
                 <span>
                   <span className="text-[#2AC1BC]">Focus</span>{' '}
-                  <span className="text-gray-800">Train</span>
+                  <span className="text-gray-800 dark:text-gray-100">Train</span>
                 </span>
               ) : (
                 <button
@@ -270,12 +270,12 @@ export default function HomePage() {
                   className="hover:opacity-70 transition-opacity"
                 >
                   <span className="text-[#2AC1BC]">Focus</span>{' '}
-                  <span className="text-gray-800">Train</span>
+                  <span className="text-gray-800 dark:text-gray-100">Train</span>
                 </button>
               )}
             </h1>
             {me && !isFocusScreen && (
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 {me.nickname} · {me.email}
               </p>
             )}
@@ -283,7 +283,7 @@ export default function HomePage() {
           <button
             onClick={() => setGuideOpen(true)}
             disabled={isRunning}
-            className="mb-1 flex h-7 w-7 items-center justify-center rounded-full border border-gray-200 bg-white text-sm font-bold text-gray-400 transition hover:border-[#2AC1BC] hover:text-[#2AC1BC] disabled:cursor-not-allowed disabled:opacity-40"
+            className="mb-1 flex h-7 w-7 items-center justify-center rounded-full border border-gray-200 bg-white text-sm font-bold text-gray-400 transition hover:border-[#2AC1BC] hover:text-[#2AC1BC] disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500"
             title={isRunning ? '운행 중에는 사용할 수 없습니다' : '사용법 보기'}
             aria-label="사용법 보기"
           >
@@ -295,7 +295,7 @@ export default function HomePage() {
           <div className="flex items-center gap-2">
             {isRunning ? (
               <span
-                className="cursor-not-allowed rounded-lg border border-gray-200 bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-300"
+                className="cursor-not-allowed rounded-lg border border-gray-200 bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-600"
                 title="운행 중에는 이동할 수 없습니다"
               >
                 내 프로필
@@ -303,14 +303,14 @@ export default function HomePage() {
             ) : (
               <Link
                 href="/profile"
-                className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50"
+                className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
               >
                 내 프로필
               </Link>
             )}
             {isRunning ? (
               <span
-                className="cursor-not-allowed rounded-lg border border-gray-200 bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-300"
+                className="cursor-not-allowed rounded-lg border border-gray-200 bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-600"
                 title="운행 중에는 이동할 수 없습니다"
               >
                 이동 기록
@@ -318,7 +318,7 @@ export default function HomePage() {
             ) : (
               <Link
                 href="/history"
-                className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50"
+                className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
               >
                 이동 기록
               </Link>
@@ -326,7 +326,7 @@ export default function HomePage() {
             <button
               onClick={handleLogout}
               disabled={isRunning}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-300"
+              className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:disabled:bg-gray-700 dark:disabled:text-gray-600"
               title={isRunning ? '운행 중에는 로그아웃할 수 없습니다' : ''}
             >
               로그아웃
@@ -336,7 +336,7 @@ export default function HomePage() {
       </header>
 
       {error && (
-        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
           {error}
         </div>
       )}

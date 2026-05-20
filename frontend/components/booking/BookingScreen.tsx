@@ -36,7 +36,7 @@ export function BookingScreen({
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
       <div className="space-y-6 lg:col-span-1">
-        <section className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
+        <section className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
           <h2 className="mb-5 flex items-center gap-2 text-lg font-bold">
             <span className="rounded bg-[#2AC1BC] px-1.5 py-0.5 text-sm text-white">
               🎫
@@ -46,13 +46,13 @@ export function BookingScreen({
 
           <div className="space-y-4">
             <div>
-              <label className="mb-1 block text-xs font-bold uppercase text-gray-400">
+              <label className="mb-1 block text-xs font-bold uppercase text-gray-400 dark:text-gray-500">
                 출발역
               </label>
               <select
                 value={departureId}
                 onChange={(e) => onDepartureChange(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 bg-gray-50 p-3 outline-none focus:border-[#2AC1BC]"
+                className="w-full rounded-lg border border-gray-200 bg-gray-50 p-3 outline-none focus:border-[#2AC1BC] dark:border-gray-700 dark:bg-gray-700 dark:text-gray-100"
               >
                 <option value="">출발역 선택</option>
                 {stations.map((s) => (
@@ -63,13 +63,13 @@ export function BookingScreen({
               </select>
             </div>
             <div>
-              <label className="mb-1 block text-xs font-bold uppercase text-gray-400">
+              <label className="mb-1 block text-xs font-bold uppercase text-gray-400 dark:text-gray-500">
                 도착역
               </label>
               <select
                 value={arrivalId}
                 onChange={(e) => onArrivalChange(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 bg-gray-50 p-3 outline-none focus:border-[#2AC1BC]"
+                className="w-full rounded-lg border border-gray-200 bg-gray-50 p-3 outline-none focus:border-[#2AC1BC] dark:border-gray-700 dark:bg-gray-700 dark:text-gray-100"
               >
                 <option value="">도착역 선택</option>
                 {stations.map((s) => (
@@ -80,12 +80,12 @@ export function BookingScreen({
               </select>
             </div>
 
-            <div className="flex items-center justify-between rounded-2xl border border-gray-100 bg-gray-50 px-4 py-3">
+            <div className="flex items-center justify-between rounded-2xl border border-gray-100 bg-gray-50 px-4 py-3 dark:border-gray-700 dark:bg-gray-700">
               <div>
-                <p className="text-[10px] font-bold uppercase text-gray-400">
+                <p className="text-[10px] font-bold uppercase text-gray-400 dark:text-gray-500">
                   Focus Delay
                 </p>
-                <p className="text-xs font-bold text-gray-600">
+                <p className="text-xs font-bold text-gray-600 dark:text-gray-300">
                   열차 지연 시간
                 </p>
               </div>
@@ -98,19 +98,19 @@ export function BookingScreen({
                   onChange={(e) =>
                     onDelayChange(Math.max(0, Number(e.target.value) || 0))
                   }
-                  className="w-20 rounded-lg border border-gray-200 bg-white p-2 text-center font-bold text-sm outline-none focus:border-[#2AC1BC]"
+                  className="w-20 rounded-lg border border-gray-200 bg-white p-2 text-center font-bold text-sm outline-none focus:border-[#2AC1BC] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
                 />
-                <span className="text-xs font-bold text-gray-400">분</span>
+                <span className="text-xs font-bold text-gray-400 dark:text-gray-500">분</span>
               </div>
             </div>
 
             {previewMinutes !== null && (
-              <div className="rounded-2xl border border-[#2AC1BC]/20 bg-[#EBFBFA] p-4 text-center">
-                <p className="text-xs text-gray-500">총 몰입 시간</p>
+              <div className="rounded-2xl border border-[#2AC1BC]/20 bg-[#EBFBFA] p-4 text-center dark:bg-[#14302f]">
+                <p className="text-xs text-gray-500 dark:text-gray-400">총 몰입 시간</p>
                 <p className="text-2xl font-bold text-[#2AC1BC]">
                   {previewMinutes + delayMinutes}분
                 </p>
-                <p className="mt-1 text-[10px] text-gray-400">
+                <p className="mt-1 text-[10px] text-gray-400 dark:text-gray-500">
                   기본 {previewMinutes}분 + 지연 {delayMinutes}분
                 </p>
               </div>
@@ -119,7 +119,7 @@ export function BookingScreen({
             <button
               onClick={onSubmit}
               disabled={!canSubmit}
-              className="w-full rounded-2xl bg-[#2AC1BC] py-4 text-base font-bold text-white shadow-sm hover:opacity-90 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
+              className="w-full rounded-2xl bg-[#2AC1BC] py-4 text-base font-bold text-white shadow-sm hover:opacity-90 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 dark:disabled:bg-gray-700 dark:disabled:text-gray-500"
             >
               예매 완료! 🎫
             </button>
