@@ -1,4 +1,4 @@
-# 🚆 TrainFocus
+# 🚆 FocusTrain
 
 > 기차 여정에 빗댄 집중 서비스
 
