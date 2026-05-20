@@ -63,7 +63,7 @@ class UserControllerTest {
     }
 
     @Test
-    void 닉네임_중복이면_400() throws Exception {
+    void 닉네임_중복이면_409() throws Exception {
         given(userService.updateNickname(any(), any()))
                 .willThrow(new BusinessException(ErrorCode.USER_NICKNAME_DUPLICATE));
 
@@ -71,7 +71,7 @@ class UserControllerTest {
                         .header("Authorization", BEARER)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new UpdateNicknameRequest("중복닉네임"))))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.errorCode").value("USER_NICKNAME_DUPLICATE"));
     }
 
