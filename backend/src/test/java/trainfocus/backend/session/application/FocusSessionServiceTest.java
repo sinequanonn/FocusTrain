@@ -1,16 +1,15 @@
 package trainfocus.backend.session.application;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
-import org.springframework.test.util.ReflectionTestUtils;
-import trainfocus.backend.station.domain.repository.StationRepository;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.util.ReflectionTestUtils;
 import trainfocus.backend.common.exception.BusinessException;
 import trainfocus.backend.common.exception.ErrorCode;
 import trainfocus.backend.route.domain.Route;
@@ -22,6 +21,7 @@ import trainfocus.backend.session.domain.FocusSessionStatus;
 import trainfocus.backend.session.domain.repository.FocusSessionRepository;
 import trainfocus.backend.station.domain.Station;
 import trainfocus.backend.station.domain.StationFixture;
+import trainfocus.backend.station.domain.repository.StationRepository;
 import trainfocus.backend.user.domain.User;
 import trainfocus.backend.user.domain.UserFixture;
 
@@ -51,7 +51,7 @@ class FocusSessionServiceTest {
     private Station departure;
     private Station arrival;
 
-    @org.junit.jupiter.api.BeforeEach
+    @BeforeEach
     void setUp() {
         user = UserFixture.withId(1L);
         departure = StationFixture.of(10L, "강남");
@@ -308,6 +308,33 @@ class FocusSessionServiceTest {
                 .isInstanceOf(BusinessException.class)
                 .satisfies(e -> assertThat(((BusinessException) e).getErrorCode())
                         .isEqualTo(ErrorCode.SESSION_FORBIDDEN));
+    }
+
+    @Test
+    void findActive_자동완료_트리거되면_empty_반환되고_세션은_COMPLETED() {
+        // target=1분, 2시간 전 시작 → 자동완료 대상
+        FocusSession session = FocusSession.createNewFocusSession(
+                user, departure, arrival, 1, 0, LocalDateTime.now().minusHours(2));
+        given(focusSessionRepository.findFirstByUserAndStatusIn(any(), any()))
+                .willReturn(Optional.of(session));
+
+        ActiveFocusSessionResponse response = focusSessionService.findActive(user);
+
+        assertThat(response.hasActiveSession()).isFalse();
+        assertThat(response.session()).isNull();
+        assertThat(session.getStatus()).isEqualTo(FocusSessionStatus.COMPLETED);
+    }
+
+    @Test
+    void findById_자동완료_트리거되면_응답_상태가_COMPLETED() {
+        FocusSession session = FocusSession.createNewFocusSession(
+                user, departure, arrival, 1, 0, LocalDateTime.now().minusHours(2));
+        ReflectionTestUtils.setField(session, "id", 100L);
+        given(focusSessionRepository.findById(100L)).willReturn(Optional.of(session));
+
+        FocusSessionDetailResponse response = focusSessionService.findById(user, 100L);
+
+        assertThat(response.status()).isEqualTo("COMPLETED");
     }
 
     // ===================== helpers =====================
