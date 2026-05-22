@@ -178,6 +178,26 @@ public class FocusSession extends BaseEntity {
         return Collections.unmodifiableList(this.legs);
     }
 
+    public void autoCompleteIfTargetReached(LocalDateTime now) {
+        if (this.status != FocusSessionStatus.RUNNING) {
+            return;
+        }
+        int endedAccumulated = accumulatedSeconds();
+        int remainingTargetSeconds = totalTargetSeconds() - endedAccumulated;
+        LocalDateTime currentLegStart = currentLeg().getStartedAt();
+
+        LocalDateTime reachTime = remainingTargetSeconds <= 0
+                ? currentLegStart
+                : currentLegStart.plusSeconds(remainingTargetSeconds);
+
+        if (now.isBefore(reachTime)) {
+            return;
+        }
+        currentLeg().end(reachTime);
+        this.status = FocusSessionStatus.COMPLETED;
+        this.endedAt = reachTime;
+    }
+
     private Leg currentLeg() {
         return this.legs.getLast();
     }
