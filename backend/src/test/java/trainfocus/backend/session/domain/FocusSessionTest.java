@@ -293,4 +293,90 @@ class FocusSessionTest {
         assertThatThrownBy(() -> session.getLegs().add(null))
                 .isInstanceOf(UnsupportedOperationException.class);
     }
+
+    @Test
+    void autoCompleteIfTargetReached_RUNNING이고_누적이_목표_도달_시_정확한_도달시점으로_완료() {
+        FocusSession session = FocusSession.createNewFocusSession(user, departure, arrival, 1, 0, START);
+        LocalDateTime now = START.plusSeconds(300);
+
+        session.autoCompleteIfTargetReached(now);
+
+        assertThat(session.getStatus()).isEqualTo(FocusSessionStatus.COMPLETED);
+        assertThat(session.getEndedAt()).isEqualTo(START.plusSeconds(60));
+        assertThat(session.getLegs().get(0).isRunning()).isFalse();
+        assertThat(session.getLegs().get(0).getDurationSeconds()).isEqualTo(60);
+    }
+
+    @Test
+    void autoCompleteIfTargetReached_누적이_목표_미달이면_변화_없음() {
+        FocusSession session = FocusSession.createNewFocusSession(user, departure, arrival, 1, 0, START);
+
+        session.autoCompleteIfTargetReached(START.plusSeconds(30));
+
+        assertThat(session.getStatus()).isEqualTo(FocusSessionStatus.RUNNING);
+        assertThat(session.getEndedAt()).isNull();
+        assertThat(session.getLegs().get(0).isRunning()).isTrue();
+    }
+
+    @Test
+    void autoCompleteIfTargetReached_PAUSED는_자동완료_대상에서_제외() {
+        FocusSession session = FocusSession.createNewFocusSession(user, departure, arrival, 1, 0, START);
+        session.pause(START.plusSeconds(120));
+
+        session.autoCompleteIfTargetReached(START.plusSeconds(180));
+
+        assertThat(session.getStatus()).isEqualTo(FocusSessionStatus.PAUSED);
+        assertThat(session.getEndedAt()).isNull();
+    }
+
+    @Test
+    void autoCompleteIfTargetReached_이미_COMPLETED면_변화_없음() {
+        FocusSession session = FocusSession.createNewFocusSession(user, departure, arrival, 1, 0, START);
+        LocalDateTime completedAt = START.plusSeconds(70);
+        session.complete(completedAt);
+
+        session.autoCompleteIfTargetReached(START.plusSeconds(1000));
+
+        assertThat(session.getStatus()).isEqualTo(FocusSessionStatus.COMPLETED);
+        assertThat(session.getEndedAt()).isEqualTo(completedAt);
+    }
+
+    @Test
+    void autoCompleteIfTargetReached_pause_resume_후_누적이_목표_도달하면_정확한_시점으로_완료() {
+        // 목표 120s. leg1: 60s (pause). 1시간 뒤 resume → leg2가 60s 채우면 목표 도달.
+        FocusSession session = FocusSession.createNewFocusSession(user, departure, arrival, 2, 0, START);
+        session.pause(START.plusSeconds(60));
+        LocalDateTime resumeAt = START.plusSeconds(3600);
+        session.resume(resumeAt);
+
+        session.autoCompleteIfTargetReached(resumeAt.plusSeconds(120)); // 충분히 지난 시점
+
+        assertThat(session.getStatus()).isEqualTo(FocusSessionStatus.COMPLETED);
+        assertThat(session.getEndedAt()).isEqualTo(resumeAt.plusSeconds(60));
+    }
+
+    @Test
+    void autoCompleteIfTargetReached_브라우저_종료_24시간_뒤_조회_시_초과누적_방지() {
+        FocusSession session = FocusSession.createNewFocusSession(user, departure, arrival, 1, 0, START);
+
+        session.autoCompleteIfTargetReached(START.plusDays(1));
+
+        assertThat(session.getStatus()).isEqualTo(FocusSessionStatus.COMPLETED);
+        assertThat(session.getEndedAt()).isEqualTo(START.plusSeconds(60));
+        assertThat(session.accumulatedSeconds()).isEqualTo(60); // 86400이 아닌 60
+    }
+
+    @Test
+    void autoCompleteIfTargetReached_종료된_leg_합이_이미_목표_초과한_채_RUNNING이면_currentLeg_시작시점으로_완료() {
+        FocusSession session = FocusSession.createNewFocusSession(user, departure, arrival, 1, 0, START);
+        session.pause(START.plusSeconds(120));
+        LocalDateTime resumeAt = START.plusSeconds(200);
+        session.resume(resumeAt);
+
+        session.autoCompleteIfTargetReached(resumeAt.plusSeconds(10));
+
+        assertThat(session.getStatus()).isEqualTo(FocusSessionStatus.COMPLETED);
+        assertThat(session.getEndedAt()).isEqualTo(resumeAt);
+        assertThat(session.getLegs().get(1).getDurationSeconds()).isZero();
+    }
 }

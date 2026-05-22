@@ -93,16 +93,26 @@ public class FocusSessionService {
         return FocusSessionEndedResponse.from(session);
     }
 
+    @Transactional
     public FocusSessionDetailResponse findById(User user, Long sessionId) {
+        LocalDateTime now = LocalDateTime.now();
         FocusSession session = findOwnedSession(user, sessionId);
+        session.autoCompleteIfTargetReached(now);
         return FocusSessionDetailResponse.from(session, LocalDateTime.now());
     }
 
+    @Transactional
     public ActiveFocusSessionResponse findActive(User user) {
         LocalDateTime now = LocalDateTime.now();
         return focusSessionRepository
                 .findFirstByUserAndStatusIn(user, ACTIVE_STATUSES)
-                .map(session -> ActiveFocusSessionResponse.of(session, now))
+                .map(session -> {
+                    session.autoCompleteIfTargetReached(now);
+                    if (session.getStatus().isEnded()) {
+                        return ActiveFocusSessionResponse.empty();
+                    }
+                    return ActiveFocusSessionResponse.of(session, now);
+                })
                 .orElseGet(ActiveFocusSessionResponse::empty);
     }
 
