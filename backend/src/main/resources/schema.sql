@@ -6,10 +6,12 @@ CREATE TABLE IF NOT EXISTS `users`
     `firebase_uid` VARCHAR(128) NOT NULL,
     `email`        VARCHAR(255) NOT NULL,
     `nickname`     VARCHAR(50)  NOT NULL,
+    `departure_station_id` BIGINT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_users_firebase_uid` (`firebase_uid`),
     UNIQUE KEY `uk_users_email` (`email`),
-    UNIQUE KEY `uk_users_nickname` (`nickname`)
+    UNIQUE KEY `uk_users_nickname` (`nickname`),
+    CONSTRAINT `fk_users_departure_station` FOREIGN KEY (`departure_station_id`) REFERENCES `stations` (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci;
@@ -20,6 +22,8 @@ CREATE TABLE IF NOT EXISTS `stations`
     `created_at` DATETIME(6) NOT NULL,
     `updated_at` DATETIME(6) NOT NULL,
     `name`       VARCHAR(50) NOT NULL,
+    `latitude`   DECIMAL(10, 7) NOT NULL,
+    `longitude`  DECIMAL(10, 7) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_stations_name` (`name`)
 ) ENGINE = InnoDB
