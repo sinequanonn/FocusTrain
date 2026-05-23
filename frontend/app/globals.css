@@ -36,3 +36,15 @@ body {
 input, select, textarea {
   font-size: 16px;
 }
+
+/* 기차 위치 펄스 애니메이션 (KoreaMap focus 모드) */
+@keyframes trainPulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}

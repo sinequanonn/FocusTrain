@@ -41,13 +41,13 @@ export function TicketScreen({
   const seat = randomSeat();
 
   return (
-    <div className="mx-auto max-w-md">
+    <div className="mx-auto w-full max-w-xl px-4">
       <div className="relative overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-gray-800">
         {/* 상단 헤더 */}
-        <div className="bg-[#2AC1BC] p-5 text-white">
+        <div className="bg-[#2AC1BC] p-6 text-white">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-widest opacity-80">
-              Train Focus
+              FocusTrain
             </span>
             <span className="text-xs font-bold opacity-80">
               {now.toLocaleDateString('ko-KR')}
@@ -57,30 +57,30 @@ export function TicketScreen({
         </div>
 
         {/* 출발 → 도착 */}
-        <div className="px-6 pb-4 pt-6">
+        <div className="px-8 pb-5 pt-8">
           <div className="flex items-end justify-between">
             <div>
-              <p className="text-[10px] font-bold uppercase text-gray-400 dark:text-gray-500">
+              <p className="text-xs font-bold uppercase text-gray-400 dark:text-gray-500">
                 FROM
               </p>
-              <p className="text-3xl font-bold text-gray-800 dark:text-gray-100">
+              <p className="text-4xl font-bold text-gray-800 dark:text-gray-100">
                 {departure.name}
               </p>
-              <p className="mt-1 font-mono text-xs text-gray-400 dark:text-gray-500">
+              <p className="mt-1 font-mono text-sm text-gray-400 dark:text-gray-500">
                 출발 {fmt(now)}
               </p>
             </div>
-            <div className="mx-3 flex flex-1 items-center">
+            <div className="mx-4 flex flex-1 items-center">
               <div className="h-px flex-1 border-t-2 border-dashed border-gray-200 dark:border-gray-700" />
-              <span className="px-2 text-lg">🚄</span>
+              <span className="px-2 text-2xl">🚄</span>
               <div className="h-px flex-1 border-t-2 border-dashed border-gray-200 dark:border-gray-700" />
             </div>
             <div className="text-right">
-              <p className="text-[10px] font-bold uppercase text-gray-400 dark:text-gray-500">
+              <p className="text-xs font-bold uppercase text-gray-400 dark:text-gray-500">
                 TO
               </p>
-              <p className="text-3xl font-bold text-gray-800 dark:text-gray-100">{arrival.name}</p>
-              <p className="mt-1 font-mono text-xs text-gray-400 dark:text-gray-500">
+              <p className="text-4xl font-bold text-gray-800 dark:text-gray-100">{arrival.name}</p>
+              <p className="mt-1 font-mono text-sm text-gray-400 dark:text-gray-500">
                 도착 {fmt(arriveAt)}
               </p>
             </div>
@@ -95,39 +95,39 @@ export function TicketScreen({
         </div>
 
         {/* 상세 */}
-        <div className="grid grid-cols-3 gap-3 p-6 text-center">
+        <div className="grid grid-cols-3 gap-3 p-8 text-center">
           <div>
-            <p className="text-[10px] font-bold uppercase text-gray-400 dark:text-gray-500">
+            <p className="text-xs font-bold uppercase text-gray-400 dark:text-gray-500">
               기본 시간
             </p>
-            <p className="mt-1 text-base font-bold text-gray-700 dark:text-gray-200">
+            <p className="mt-1.5 text-lg font-bold text-gray-700 dark:text-gray-200">
               {baseDurationMinutes}분
             </p>
           </div>
           <div className="border-x border-gray-100 dark:border-gray-700">
-            <p className="text-[10px] font-bold uppercase text-gray-400 dark:text-gray-500">
+            <p className="text-xs font-bold uppercase text-gray-400 dark:text-gray-500">
               지연
             </p>
-            <p className="mt-1 text-base font-bold text-gray-700 dark:text-gray-200">
+            <p className="mt-1.5 text-lg font-bold text-gray-700 dark:text-gray-200">
               +{delayMinutes}분
             </p>
           </div>
           <div>
-            <p className="text-[10px] font-bold uppercase text-gray-400 dark:text-gray-500">
+            <p className="text-xs font-bold uppercase text-gray-400 dark:text-gray-500">
               총 몰입
             </p>
-            <p className="mt-1 text-base font-bold text-[#2AC1BC]">
+            <p className="mt-1.5 text-lg font-bold text-[#2AC1BC]">
               {totalMinutes}분
             </p>
           </div>
         </div>
 
-        <div className="border-t border-gray-100 p-6 dark:border-gray-700">
-          <div className="flex items-center justify-between text-xs">
+        <div className="border-t border-gray-100 p-8 dark:border-gray-700">
+          <div className="flex items-center justify-between text-sm">
             <span className="font-bold uppercase text-gray-400 dark:text-gray-500">좌석</span>
             <span className="font-mono font-bold text-gray-700 dark:text-gray-200">{seat}</span>
           </div>
-          <div className="mt-3 flex items-center justify-between text-xs">
+          <div className="mt-3 flex items-center justify-between text-sm">
             <span className="font-bold uppercase text-gray-400 dark:text-gray-500">예약 번호</span>
             <span className="font-mono font-bold text-gray-700 dark:text-gray-200">
               TF-{now.getTime().toString().slice(-8)}
@@ -136,7 +136,7 @@ export function TicketScreen({
         </div>
 
         {/* 가짜 바코드 장식 */}
-        <div className="flex h-10 gap-px bg-white px-6 pb-2 dark:bg-gray-800">
+        <div className="flex h-12 gap-px bg-white px-8 pb-3 dark:bg-gray-800">
           {Array.from({ length: 40 }).map((_, i) => (
             <div
               key={i}
