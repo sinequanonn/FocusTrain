@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import trainfocus.backend.common.domain.BaseEntity;
+import trainfocus.backend.station.domain.Station;
 
 @Getter
 @Entity
@@ -25,6 +26,10 @@ public class User extends BaseEntity {
     @Column(length = 50, nullable = false)
     private String nickname;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "departure_station_id")
+    private Station departureStation;
+
     private User(String firebaseUid, String email, String nickname) {
         this.firebaseUid = firebaseUid;
         this.email = email;
@@ -37,6 +42,14 @@ public class User extends BaseEntity {
 
     public void updateNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public void updateDepartureStation(Station station) {
+        this.departureStation = station;
+    }
+
+    public boolean hasDepartureStation() {
+        return departureStation != null;
     }
 }
 

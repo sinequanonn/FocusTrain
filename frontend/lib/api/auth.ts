@@ -10,6 +10,8 @@ export interface MeResponse {
   userId: number;
   email: string;
   nickname: string;
+  departureStationId: number | null;
+  departureStationName: string | null;
   createdAt: string;
 }
 
@@ -28,5 +30,14 @@ export async function updateNickname(nickname: string): Promise<MeResponse> {
   return apiClient<MeResponse>('/api/users/me', {
     method: 'PATCH',
     body: JSON.stringify({ nickname }),
+  });
+}
+
+export async function updateDepartureStation(
+  stationId: number
+): Promise<MeResponse> {
+  return apiClient<MeResponse>('/api/users/me/departure-station', {
+    method: 'PUT',
+    body: JSON.stringify({ stationId }),
   });
 }

@@ -182,7 +182,7 @@ export default function LoginPage() {
       </div>
 
       <footer className="relative z-10 py-6 text-center text-[11px] text-gray-400">
-        © {new Date().getFullYear()} Train Focus
+        © {new Date().getFullYear()} FocusTrain
       </footer>
     </main>
   );

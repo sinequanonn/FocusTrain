@@ -77,8 +77,15 @@ export default function HomePage() {
           getStations(),
           getActiveSession(),
         ]);
+        // 출발역 미설정 → 온보딩 화면으로
+        if (meRes.departureStationId === null) {
+          router.replace('/onboarding');
+          return;
+        }
         setMe(meRes);
         setStations(stationsRes.stations);
+        // 출발역 기본값 = 사용자의 저장된 출발역
+        setDepartureId(String(meRes.departureStationId));
         if (activeRes.hasActiveSession && activeRes.session) {
           setSession(activeRes.session);
           setAccumulatedSeconds(activeRes.session.accumulatedSeconds);
@@ -88,7 +95,7 @@ export default function HomePage() {
         handleError(e);
       }
     })();
-  }, [user]);
+  }, [user, router]);
 
   // 예매 미리보기 (출발/도착 둘 다 있으면)
   useEffect(() => {
@@ -140,14 +147,9 @@ export default function HomePage() {
 
   function handleStationClick(stationId: string) {
     if (screen !== 'booking') return;
-    if (!departureId) {
-      setDepartureId(stationId);
-    } else if (!arrivalId && stationId !== departureId) {
-      setArrivalId(stationId);
-    } else {
-      setDepartureId(stationId);
-      setArrivalId('');
-    }
+    // 출발역은 사용자가 온보딩/마이페이지에서 설정한 값으로 고정 — 지도에서는 도착역만 선택
+    if (stationId === departureId) return;
+    setArrivalId(stationId);
   }
 
   // 1단계: 예매 완료! → 표 화면 (백엔드 호출 없음)
@@ -239,7 +241,7 @@ export default function HomePage() {
   function resetToBooking() {
     setSession(null);
     setAccumulatedSeconds(0);
-    setDepartureId('');
+    setDepartureId(me?.departureStationId ? String(me.departureStationId) : '');
     setArrivalId('');
     setDelayMinutes(0);
     setScreen('booking');
@@ -253,37 +255,41 @@ export default function HomePage() {
   const isFocusScreen = screen === 'focus';
 
   return (
-    <main className="mx-auto max-w-6xl p-6 md:p-10">
-      {/* 헤더 */}
-      <header className="mb-8 flex items-end justify-between">
-        <div className="flex items-end gap-3">
+    <main className="relative h-screen w-screen overflow-hidden">
+      {/* 헤더 floating */}
+      <header className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between p-4 md:p-6">
+        <div className="pointer-events-auto flex items-center gap-3 rounded-2xl border border-gray-100 bg-white/95 px-4 py-2 shadow-md backdrop-blur dark:border-gray-700 dark:bg-gray-800/95">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+            <h1 className="text-xl font-bold tracking-tight md:text-2xl">
               {isFocusScreen ? (
                 <span>
                   <span className="text-[#2AC1BC]">Focus</span>{' '}
-                  <span className="text-gray-800 dark:text-gray-100">Train</span>
+                  <span className="text-gray-800 dark:text-gray-100">
+                    Train
+                  </span>
                 </span>
               ) : (
                 <button
                   onClick={() => router.push('/')}
-                  className="hover:opacity-70 transition-opacity"
+                  className="transition-opacity hover:opacity-70"
                 >
                   <span className="text-[#2AC1BC]">Focus</span>{' '}
-                  <span className="text-gray-800 dark:text-gray-100">Train</span>
+                  <span className="text-gray-800 dark:text-gray-100">
+                    Train
+                  </span>
                 </button>
               )}
             </h1>
             {me && !isFocusScreen && (
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                {me.nickname} · {me.email}
+              <p className="text-[10px] text-gray-500 dark:text-gray-400">
+                {me.nickname}
               </p>
             )}
           </div>
           <button
             onClick={() => setGuideOpen(true)}
             disabled={isRunning}
-            className="mb-1 flex h-7 w-7 items-center justify-center rounded-full border border-gray-200 bg-white text-sm font-bold text-gray-400 transition hover:border-[#2AC1BC] hover:text-[#2AC1BC] disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500"
+            className="flex h-7 w-7 items-center justify-center rounded-full border border-gray-200 bg-white text-sm font-bold text-gray-400 transition hover:border-[#2AC1BC] hover:text-[#2AC1BC] disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500"
             title={isRunning ? '운행 중에는 사용할 수 없습니다' : '사용법 보기'}
             aria-label="사용법 보기"
           >
@@ -292,10 +298,10 @@ export default function HomePage() {
         </div>
 
         {!isFocusScreen && (
-          <div className="flex items-center gap-2">
+          <div className="pointer-events-auto mr-14 flex items-center gap-2 rounded-2xl border border-gray-100 bg-white/95 px-3 py-2 shadow-md backdrop-blur dark:border-gray-700 dark:bg-gray-800/95">
             {isRunning ? (
               <span
-                className="cursor-not-allowed rounded-lg border border-gray-200 bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-600"
+                className="cursor-not-allowed rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-300 dark:bg-gray-700 dark:text-gray-600"
                 title="운행 중에는 이동할 수 없습니다"
               >
                 내 프로필
@@ -303,14 +309,14 @@ export default function HomePage() {
             ) : (
               <Link
                 href="/profile"
-                className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                className="rounded-lg px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
               >
                 내 프로필
               </Link>
             )}
             {isRunning ? (
               <span
-                className="cursor-not-allowed rounded-lg border border-gray-200 bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-600"
+                className="cursor-not-allowed rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-300 dark:bg-gray-700 dark:text-gray-600"
                 title="운행 중에는 이동할 수 없습니다"
               >
                 이동 기록
@@ -318,7 +324,7 @@ export default function HomePage() {
             ) : (
               <Link
                 href="/history"
-                className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                className="rounded-lg px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
               >
                 이동 기록
               </Link>
@@ -326,7 +332,7 @@ export default function HomePage() {
             <button
               onClick={handleLogout}
               disabled={isRunning}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:disabled:bg-gray-700 dark:disabled:text-gray-600"
+              className="rounded-lg px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:text-gray-300 dark:text-gray-300 dark:hover:bg-gray-700 dark:disabled:text-gray-600"
               title={isRunning ? '운행 중에는 로그아웃할 수 없습니다' : ''}
             >
               로그아웃
@@ -336,7 +342,7 @@ export default function HomePage() {
       </header>
 
       {error && (
-        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
+        <div className="pointer-events-auto absolute left-1/2 top-20 z-30 -translate-x-1/2 rounded-xl border border-red-200 bg-red-50/95 px-4 py-2 text-sm text-red-700 shadow-md backdrop-blur dark:border-red-900 dark:bg-red-950/95 dark:text-red-300">
           {error}
         </div>
       )}
@@ -348,7 +354,6 @@ export default function HomePage() {
           arrivalId={arrivalId}
           delayMinutes={delayMinutes}
           previewMinutes={previewMinutes}
-          onDepartureChange={setDepartureId}
           onArrivalChange={setArrivalId}
           onDelayChange={setDelayMinutes}
           onStationClick={handleStationClick}
@@ -361,15 +366,17 @@ export default function HomePage() {
         previewMinutes !== null &&
         departureId &&
         arrivalId && (
-          <TicketScreen
-            departure={stations.find((s) => String(s.id) === departureId)!}
-            arrival={stations.find((s) => String(s.id) === arrivalId)!}
-            baseDurationMinutes={previewMinutes}
-            delayMinutes={delayMinutes}
-            onBack={() => setScreen('booking')}
-            onConfirm={handleBoardTrain}
-            busy={busy}
-          />
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+            <TicketScreen
+              departure={stations.find((s) => String(s.id) === departureId)!}
+              arrival={stations.find((s) => String(s.id) === arrivalId)!}
+              baseDurationMinutes={previewMinutes}
+              delayMinutes={delayMinutes}
+              onBack={() => setScreen('booking')}
+              onConfirm={handleBoardTrain}
+              busy={busy}
+            />
+          </div>
         )}
 
       {screen === 'focus' && session && (

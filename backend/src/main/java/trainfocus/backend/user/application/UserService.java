@@ -8,6 +8,9 @@ import trainfocus.backend.auth.application.dto.MeResponse;
 import trainfocus.backend.auth.firebase.FirebaseUserInfo;
 import trainfocus.backend.common.exception.BusinessException;
 import trainfocus.backend.common.exception.ErrorCode;
+import trainfocus.backend.station.domain.Station;
+import trainfocus.backend.station.domain.repository.StationRepository;
+import trainfocus.backend.user.application.dto.UpdateDepartureStationRequest;
 import trainfocus.backend.user.application.dto.UpdateNicknameRequest;
 import trainfocus.backend.user.domain.User;
 import trainfocus.backend.user.domain.repository.UserRepository;
@@ -18,6 +21,7 @@ import trainfocus.backend.user.domain.repository.UserRepository;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final StationRepository stationRepository;
 
     @Transactional
     public User findOrCreateUser(FirebaseUserInfo firebaseUserInfo) {
@@ -43,6 +47,14 @@ public class UserService {
             throw new BusinessException(ErrorCode.USER_NICKNAME_DUPLICATE);
         }
         user.updateNickname(request.nickname());
+        return MeResponse.from(user);
+    }
+
+    @Transactional
+    public MeResponse updateDepartureStation(UpdateDepartureStationRequest request, User user) {
+        Station station = stationRepository.findById(request.stationId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.STATION_NOT_FOUND));
+        user.updateDepartureStation(station);
         return MeResponse.from(user);
     }
 }
