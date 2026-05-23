@@ -18,6 +18,7 @@ public enum ErrorCode {
     // USER
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
     USER_NICKNAME_DUPLICATE(HttpStatus.CONFLICT, "중복된 닉네임이 존재합니다."),
+    USER_DEPARTURE_STATION_NOT_SET(HttpStatus.UNPROCESSABLE_ENTITY, "출발역이 설정되지 않았습니다."),
 
     // COMMON
     COMMON_VALIDATION_FAILED(HttpStatus.BAD_REQUEST, "입력값이 올바르지 않습니다."),

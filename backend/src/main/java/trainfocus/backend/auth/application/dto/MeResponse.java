@@ -8,6 +8,8 @@ public record MeResponse(
         Long userId,
         String email,
         String nickname,
+        Long departureStationId,
+        String departureStationName,
         LocalDateTime createdAt
 ) {
     public static MeResponse from(User user) {
@@ -15,6 +17,8 @@ public record MeResponse(
                 user.getId(),
                 user.getEmail(),
                 user.getNickname(),
+                user.hasDepartureStation() ? user.getDepartureStation().getId() : null,
+                user.hasDepartureStation() ? user.getDepartureStation().getName() : null,
                 user.getCreatedAt()
         );
     }
