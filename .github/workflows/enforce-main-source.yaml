@@ -1,0 +1,19 @@
+name: Enforce main PR source
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  check-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Block if not from develop or hotfix/*
+        run: |
+          SRC="${{ github.head_ref }}"
+          if [[ "$SRC" != "develop" && "$SRC" != hotfix/* ]]; then
+            echo "Error: PR to main is only allowed from 'develop' or 'hotfix/*'"
+            echo "Current source: $SRC"
+            exit 1
+          fi
+          echo "Source branch '$SRC' allowed"
