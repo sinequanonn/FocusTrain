@@ -22,6 +22,7 @@ import { GuideModal } from '@/components/ui/GuideModal';
 import { BookingScreen } from '@/components/booking/BookingScreen';
 import { TicketScreen } from '@/components/booking/TicketScreen';
 import { FocusScreen } from '@/components/focus/FocusScreen';
+import { ArrivalModal } from '@/components/focus/ArrivalModal';
 
 const GUIDE_SEEN_KEY = 'trainfocus.guide.seen';
 
@@ -53,6 +54,16 @@ export default function HomePage() {
   const [busy, setBusy] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // 도착 안내 모달 — 수동/자동 도착 모두 사용
+  const [arrivalInfo, setArrivalInfo] = useState<{
+    arrivalName: string;
+    accumulatedSeconds: number;
+    totalTargetSeconds: number;
+    auto: boolean;
+  } | null>(null);
+  // 자동 도착 한 세션 1회 보장 — 세션 바뀌면 리셋
+  const autoCompletedRef = useRef(false);
 
   // 첫 방문 가이드
   useEffect(() => {
@@ -129,6 +140,35 @@ export default function HomePage() {
       if (tickRef.current) clearInterval(tickRef.current);
     };
   }, [session?.status]);
+
+  // 세션 바뀌면 자동 도착 가드 ref 리셋 (다음 세션에서 다시 트리거 가능)
+  useEffect(() => {
+    autoCompletedRef.current = false;
+  }, [session?.sessionId]);
+
+  // 자동 도착 — 브라우저 타이머 기반 (D안)
+  // RUNNING + 누적 ≥ 목표 도달 시 자동 complete 호출. 한 세션당 1회만.
+  // 백엔드 조회 시 보정(A안)은 fallback 으로 유지됨.
+  //
+  // +1 마진: 브라우저 setInterval 과 백엔드 시간 계산이 미세하게 어긋날 때
+  // 백엔드의 SESSION_TARGET_NOT_REACHED 거부를 회피.
+  // 참고: [[발생가능한_오류모음들/브라우저-백엔드 시간 racing — 자동 도착]]
+  const AUTO_ARRIVE_MARGIN_SECONDS = 1;
+  useEffect(() => {
+    if (!session) return;
+    if (session.status !== 'RUNNING') return;
+    if (autoCompletedRef.current) return;
+    if (
+      accumulatedSeconds <
+      session.totalTargetSeconds + AUTO_ARRIVE_MARGIN_SECONDS
+    )
+      return;
+
+    autoCompletedRef.current = true;
+    void handleAutoComplete();
+    // handleAutoComplete 는 함수형이라 deps 에서 안전하게 제외
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accumulatedSeconds, session?.status, session?.totalTargetSeconds]);
 
   function handleError(e: unknown) {
     if (e instanceof ApiError) {
@@ -216,12 +256,42 @@ export default function HomePage() {
     setBusy(true);
     try {
       await completeSession(session.sessionId);
-      resetToBooking();
+      // 모달 띄우고 닫을 때 booking 으로 복귀
+      setArrivalInfo({
+        arrivalName: session.arrival.name,
+        accumulatedSeconds,
+        totalTargetSeconds: session.totalTargetSeconds,
+        auto: false,
+      });
     } catch (e) {
       handleError(e);
     } finally {
       setBusy(false);
     }
+  }
+
+  async function handleAutoComplete() {
+    if (!session) return;
+    setBusy(true);
+    try {
+      await completeSession(session.sessionId);
+      setArrivalInfo({
+        arrivalName: session.arrival.name,
+        accumulatedSeconds: session.totalTargetSeconds, // 도달 시점 기준 cap
+        totalTargetSeconds: session.totalTargetSeconds,
+        auto: true,
+      });
+    } catch (e) {
+      // 실패해도 ref 유지 — 무한 재시도 방지. 사용자가 수동 도착 버튼으로 재시도 가능.
+      handleError(e);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function handleArrivalModalClose() {
+    setArrivalInfo(null);
+    resetToBooking();
   }
 
   async function handleAbort() {
@@ -396,6 +466,17 @@ export default function HomePage() {
       )}
 
       <GuideModal open={guideOpen} onClose={() => setGuideOpen(false)} />
+
+      {arrivalInfo && (
+        <ArrivalModal
+          open
+          arrivalName={arrivalInfo.arrivalName}
+          accumulatedSeconds={arrivalInfo.accumulatedSeconds}
+          totalTargetSeconds={arrivalInfo.totalTargetSeconds}
+          auto={arrivalInfo.auto}
+          onClose={handleArrivalModalClose}
+        />
+      )}
     </main>
   );
 }
