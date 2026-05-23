@@ -38,8 +38,8 @@ class StationControllerTest {
     void 전체_역_조회_200() throws Exception {
         // given
         StationsResponse response = new StationsResponse(List.of(
-                new StationResponse(1L, "강남"),
-                new StationResponse(2L, "서울역")
+                new StationResponse(1L, "강남", null, null),
+                new StationResponse(2L, "서울역", null, null)
         ));
         given(firebaseAuthClient.verifyToken("valid-token"))
                 .willReturn(new FirebaseUserInfo("uid-1", "a@b.com", "이름"));

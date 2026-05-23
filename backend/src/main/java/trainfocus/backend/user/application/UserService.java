@@ -36,11 +36,6 @@ public class UserService {
                 });
     }
 
-    public User findByFirebaseUid(String firebaseUid) {
-        return userRepository.findByFirebaseUid(firebaseUid)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-    }
-
     @Transactional
     public MeResponse updateNickname(UpdateNicknameRequest request, User user) {
         if (userRepository.existsByNickname(request.nickname())) {
