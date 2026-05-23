@@ -15,6 +15,9 @@ import trainfocus.backend.auth.firebase.FirebaseAuthClient;
 import trainfocus.backend.auth.firebase.FirebaseUserInfo;
 import trainfocus.backend.common.exception.BusinessException;
 import trainfocus.backend.common.exception.ErrorCode;
+import trainfocus.backend.user.application.UserService;
+import trainfocus.backend.user.domain.User;
+import trainfocus.backend.user.domain.UserFixture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.*;
@@ -26,6 +29,9 @@ class FirebaseAuthFilterTest {
     FirebaseAuthClient firebaseAuthClient;
 
     @Mock
+    UserService userService;
+
+    @Mock
     FilterChain filterChain;
 
     private FirebaseAuthFilter filter;
@@ -35,7 +41,7 @@ class FirebaseAuthFilterTest {
         ObjectMapper objectMapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        filter = new FirebaseAuthFilter(firebaseAuthClient, objectMapper);
+        filter = new FirebaseAuthFilter(firebaseAuthClient, userService, objectMapper);
     }
 
     @Test
@@ -61,16 +67,19 @@ class FirebaseAuthFilterTest {
     }
 
     @Test
-    void 유효한_토큰이면_attribute_설정_후_다음_필터로_진행() throws Exception {
+    void 유효한_토큰이면_User_보장_후_attribute_설정_하고_다음_필터로_진행() throws Exception {
         FirebaseUserInfo info = new FirebaseUserInfo("uid-1", "a@b.com", "이름");
+        User loginUser = UserFixture.withId(1L);
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/sessions");
         request.addHeader("Authorization", "Bearer valid-token");
         MockHttpServletResponse response = new MockHttpServletResponse();
         given(firebaseAuthClient.verifyToken("valid-token")).willReturn(info);
+        given(userService.findOrCreateUser(info)).willReturn(loginUser);
 
         filter.doFilterInternal(request, response, filterChain);
 
         assertThat(request.getAttribute(FirebaseAuthFilter.FIREBASE_USER_ATTRIBUTE)).isEqualTo(info);
+        assertThat(request.getAttribute(FirebaseAuthFilter.LOGIN_USER_ATTRIBUTE)).isEqualTo(loginUser);
         then(filterChain).should().doFilter(request, response);
     }
 
