@@ -182,6 +182,11 @@ public class FocusSession extends BaseEntity {
         if (this.status != FocusSessionStatus.RUNNING) {
             return;
         }
+        // 데이터 정합성 방어: RUNNING 인데 leg 가 비어있는 비정상 상태에서는 자동 보정 건너뜀
+        // (정상 흐름상 발생 불가: 생성/resume 시 항상 leg 추가, pause/complete/abort 는 leg 제거 안 함)
+        if (this.legs.isEmpty()) {
+            return;
+        }
         int endedAccumulated = accumulatedSeconds();
         int remainingTargetSeconds = totalTargetSeconds() - endedAccumulated;
         LocalDateTime currentLegStart = currentLeg().getStartedAt();
