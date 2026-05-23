@@ -56,7 +56,7 @@ class FocusSessionControllerTest {
         User user = UserFixture.withId(1L);
         given(firebaseAuthClient.verifyToken("valid-token"))
                 .willReturn(new FirebaseUserInfo("uid-1", "1@test.com", "테스터"));
-        given(userService.findByFirebaseUid("uid-1")).willReturn(user);
+        given(userService.findOrCreateUser(any(FirebaseUserInfo.class))).willReturn(user);
     }
 
     // ===================== POST /api/sessions =====================
@@ -66,8 +66,8 @@ class FocusSessionControllerTest {
         FocusSessionCreatedRequest request = new FocusSessionCreatedRequest(10L, 20L, 5);
         FocusSessionCreatedResponse response = new FocusSessionCreatedResponse(
                 100L, "RUNNING",
-                new StationResponse(10L, "강남"),
-                new StationResponse(20L, "서울역"),
+                new StationResponse(10L, "강남", null, null),
+                new StationResponse(20L, "서울역", null, null),
                 30, 5, 35, NOW, NOW.plusMinutes(35)
         );
         given(focusSessionService.create(any(User.class), any(FocusSessionCreatedRequest.class)))
@@ -196,8 +196,8 @@ class FocusSessionControllerTest {
     void 세션_상세_200() throws Exception {
         FocusSessionDetailResponse response = new FocusSessionDetailResponse(
                 100L, "RUNNING",
-                new StationResponse(10L, "강남"),
-                new StationResponse(20L, "서울역"),
+                new StationResponse(10L, "강남", null, null),
+                new StationResponse(20L, "서울역", null, null),
                 1800, 60, 1740,
                 NOW, NOW.plusMinutes(30), null
         );
@@ -214,8 +214,8 @@ class FocusSessionControllerTest {
     void 활성_세션_조회_200_있음() throws Exception {
         FocusSessionDetailResponse detail = new FocusSessionDetailResponse(
                 100L, "RUNNING",
-                new StationResponse(10L, "강남"),
-                new StationResponse(20L, "서울역"),
+                new StationResponse(10L, "강남", null, null),
+                new StationResponse(20L, "서울역", null, null),
                 1800, 60, 1740, NOW, NOW.plusMinutes(30), null);
         given(focusSessionService.findActive(any()))
                 .willReturn(new ActiveFocusSessionResponse(true, detail));
@@ -243,8 +243,8 @@ class FocusSessionControllerTest {
     void 세션_히스토리_조회_200() throws Exception {
         FocusSessionHistoryResponse item = new FocusSessionHistoryResponse(
                 100L, "COMPLETED",
-                new StationResponse(10L, "강남"),
-                new StationResponse(20L, "서울역"),
+                new StationResponse(10L, "강남", null, null),
+                new StationResponse(20L, "서울역", null, null),
                 1800, NOW, NOW.plusMinutes(30)
         );
         FocusSessionHistoryPageResponse page = new FocusSessionHistoryPageResponse(
@@ -280,8 +280,8 @@ class FocusSessionControllerTest {
         FocusSessionHistoryDetailResponse response = new FocusSessionHistoryDetailResponse(
                 new FocusSessionHistoryDetailResponse.SessionInfo(
                         100L, "COMPLETED",
-                        new StationResponse(10L, "강남"),
-                        new StationResponse(20L, "서울역"),
+                        new StationResponse(10L, "강남", null, null),
+                        new StationResponse(20L, "서울역", null, null),
                         1800, 1800, NOW, NOW.plusMinutes(30), NOW.plusMinutes(30)
                 ),
                 List.of(new LegResponse(1, NOW, NOW.plusMinutes(30), 1800))

@@ -46,13 +46,13 @@ class UserControllerTest {
         User user = UserFixture.withId(1L);
         given(firebaseAuthClient.verifyToken("valid-token"))
                 .willReturn(new FirebaseUserInfo("uid-1", "1@test.com", "테스터1"));
-        given(userService.findByFirebaseUid("uid-1")).willReturn(user);
+        given(userService.findOrCreateUser(any(FirebaseUserInfo.class))).willReturn(user);
     }
 
     @Test
     void 닉네임_업데이트_성공_200() throws Exception {
         given(userService.updateNickname(any(UpdateNicknameRequest.class), any(User.class)))
-                .willReturn(new MeResponse(1L, "1@test.com", "새닉네임", null));
+                .willReturn(new MeResponse(1L, "1@test.com", "새닉네임", null, null, null));
 
         mockMvc.perform(patch("/api/users/me")
                         .header("Authorization", BEARER)

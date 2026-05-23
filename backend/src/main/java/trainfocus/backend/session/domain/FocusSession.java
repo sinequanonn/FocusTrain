@@ -182,6 +182,10 @@ public class FocusSession extends BaseEntity {
         if (this.status != FocusSessionStatus.RUNNING) {
             return;
         }
+
+        if (this.legs.isEmpty()) {
+            return;
+        }
         int endedAccumulated = accumulatedSeconds();
         int remainingTargetSeconds = totalTargetSeconds() - endedAccumulated;
         LocalDateTime currentLegStart = currentLeg().getStartedAt();
