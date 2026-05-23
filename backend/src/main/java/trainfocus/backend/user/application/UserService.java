@@ -25,7 +25,7 @@ public class UserService {
 
     @Transactional
     public User findOrCreateUser(FirebaseUserInfo firebaseUserInfo) {
-        return userRepository.findByFirebaseUid(firebaseUserInfo.uid())
+        return userRepository.findByFirebaseUidWithDepartureStation(firebaseUserInfo.uid())
                 .orElseGet(() -> {
                     User newUser = User.createNewUser(
                             firebaseUserInfo.uid(),
