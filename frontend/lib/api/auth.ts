@@ -6,10 +6,13 @@ export interface LoginResponse {
   nickname: string;
 }
 
+export type Role = 'NORMAL' | 'ADMIN';
+
 export interface MeResponse {
   userId: number;
   email: string;
   nickname: string;
+  role: Role;
   departureStationId: number | null;
   departureStationName: string | null;
   createdAt: string;

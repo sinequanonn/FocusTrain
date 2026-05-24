@@ -14,6 +14,7 @@ public enum ErrorCode {
     AUTH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다. 다시 로그인해주세요."),
     AUTH_EMAIL_REQUIRED(HttpStatus.BAD_REQUEST, "이메일 정보가 필요합니다. Google 계정 권한을 확인해주세요."),
     AUTH_FIREBASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "인증 서비스에 일시적 문제가 발생했습니다."),
+    AUTH_FORBIDDEN_ADMIN_ONLY(HttpStatus.FORBIDDEN, "관리자만 접근할 수 있습니다."),
 
     // USER
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),

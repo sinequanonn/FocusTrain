@@ -8,6 +8,7 @@ public record MeResponse(
         Long userId,
         String email,
         String nickname,
+        String role,
         Long departureStationId,
         String departureStationName,
         LocalDateTime createdAt
@@ -17,6 +18,7 @@ public record MeResponse(
                 user.getId(),
                 user.getEmail(),
                 user.getNickname(),
+                user.getRole().name(),
                 user.hasDepartureStation() ? user.getDepartureStation().getId() : null,
                 user.hasDepartureStation() ? user.getDepartureStation().getName() : null,
                 user.getCreatedAt()
