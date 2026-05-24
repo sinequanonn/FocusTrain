@@ -26,6 +26,10 @@ public class User extends BaseEntity {
     @Column(length = 50, nullable = false)
     private String nickname;
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20, nullable = false)
+    private Role role = Role.NORMAL;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "departure_station_id")
     private Station departureStation;
@@ -50,6 +54,10 @@ public class User extends BaseEntity {
 
     public boolean hasDepartureStation() {
         return departureStation != null;
+    }
+
+    public boolean isAdmin() {
+        return role == Role.ADMIN;
     }
 }
 

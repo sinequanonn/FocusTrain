@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS `users`
     `firebase_uid` VARCHAR(128) NOT NULL,
     `email`        VARCHAR(255) NOT NULL,
     `nickname`     VARCHAR(50)  NOT NULL,
+    `role`         VARCHAR(20)  NOT NULL DEFAULT 'NORMAL',
     `departure_station_id` BIGINT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_users_firebase_uid` (`firebase_uid`),
