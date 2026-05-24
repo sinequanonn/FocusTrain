@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
+import { signOut } from '@/lib/firebase/auth';
 import { getMe, updateDepartureStation } from '@/lib/api/auth';
 import { getStations, Station } from '@/lib/api/stations';
 import { ApiError } from '@/lib/api/client';
@@ -58,6 +60,11 @@ export default function OnboardingPage() {
     setSelectedId(id);
   }
 
+  async function handleLogout() {
+    await signOut();
+    router.replace('/login');
+  }
+
   async function handleConfirm() {
     if (!selectedId) return;
     setError(null);
@@ -93,6 +100,29 @@ export default function OnboardingPage() {
             첫 탑승 준비 — 출발역을 선택해주세요
           </p>
         </div>
+
+        <nav className="pointer-events-auto mr-14 flex items-center gap-1 rounded-full border border-gray-200/60 bg-white/85 px-1.5 py-1 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-gray-900/60">
+          <Link
+            href="/profile"
+            className="rounded-full px-3 py-1.5 text-xs font-medium text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/10"
+          >
+            프로필
+          </Link>
+          <span className="h-3 w-px bg-gray-300/60 dark:bg-white/10" aria-hidden />
+          <Link
+            href="/history"
+            className="rounded-full px-3 py-1.5 text-xs font-medium text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/10"
+          >
+            이동 기록
+          </Link>
+          <span className="h-3 w-px bg-gray-300/60 dark:bg-white/10" aria-hidden />
+          <button
+            onClick={handleLogout}
+            className="rounded-full px-3 py-1.5 text-xs font-medium text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/10"
+          >
+            로그아웃
+          </button>
+        </nav>
       </header>
 
       {error && (

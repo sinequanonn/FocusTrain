@@ -57,6 +57,7 @@ class FocusSessionControllerTest {
         given(firebaseAuthClient.verifyToken("valid-token"))
                 .willReturn(new FirebaseUserInfo("uid-1", "1@test.com", "테스터"));
         given(userService.findOrCreateUser(any(FirebaseUserInfo.class))).willReturn(user);
+        given(userService.findByFirebaseUid("uid-1")).willReturn(user);
     }
 
     // ===================== POST /api/sessions =====================

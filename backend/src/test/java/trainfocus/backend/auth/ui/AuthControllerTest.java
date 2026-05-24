@@ -59,6 +59,7 @@ class AuthControllerTest {
         User user = User.createNewUser("uid-1", "a@b.com", "이름");
         given(firebaseAuthClient.verifyToken("valid-token")).willReturn(info);
         given(userService.findOrCreateUser(any(FirebaseUserInfo.class))).willReturn(user);
+        given(userService.findByFirebaseUid("uid-1")).willReturn(user);
 
         mockMvc.perform(get("/api/auth/me")
                         .header("Authorization", "Bearer valid-token"))

@@ -7,6 +7,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;
+import trainfocus.backend.auth.firebase.FirebaseUserInfo;
+import trainfocus.backend.user.application.UserService;
 import trainfocus.backend.user.domain.User;
 import trainfocus.backend.user.domain.UserFixture;
 
@@ -18,6 +20,9 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class LoginUserArgumentResolverTest {
+
+    @Mock
+    UserService userService;
 
     @Mock
     NativeWebRequest webRequest;
@@ -37,10 +42,11 @@ class LoginUserArgumentResolverTest {
     }
 
     @Test
-    void resolveArgument_LOGIN_USER_ATTRIBUTE_에서_User_를_꺼낸다() {
+    void resolveArgument_FIREBASE_USER_ATTRIBUTE_에서_userInfo_받아_User_조회() {
+        FirebaseUserInfo info = new FirebaseUserInfo("uid-1", "a@b.com", "이름");
         User user = UserFixture.withId(1L);
-        given(webRequest.getAttribute(FirebaseAuthFilter.LOGIN_USER_ATTRIBUTE, 0))
-                .willReturn(user);
+        given(webRequest.getAttribute(FirebaseAuthFilter.FIREBASE_USER_ATTRIBUTE, 0)).willReturn(info);
+        given(userService.findByFirebaseUid("uid-1")).willReturn(user);
 
         Object result = resolver.resolveArgument(null, null, webRequest, null);
 
@@ -49,12 +55,11 @@ class LoginUserArgumentResolverTest {
 
     @Test
     void resolveArgument_attribute_없으면_IllegalStateException() {
-        given(webRequest.getAttribute(FirebaseAuthFilter.LOGIN_USER_ATTRIBUTE, 0))
-                .willReturn(null);
+        given(webRequest.getAttribute(FirebaseAuthFilter.FIREBASE_USER_ATTRIBUTE, 0)).willReturn(null);
 
         assertThatThrownBy(() -> resolver.resolveArgument(null, null, webRequest, null))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("로그인 사용자");
+                .hasMessageContaining("인증 정보");
     }
 
     private MethodParameter methodParam(String methodName, int index) throws Exception {
