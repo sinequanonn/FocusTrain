@@ -25,7 +25,7 @@ public class UserService {
 
     @Transactional
     public User findOrCreateUser(FirebaseUserInfo firebaseUserInfo) {
-        return userRepository.findByFirebaseUidWithDepartureStation(firebaseUserInfo.uid())
+        return userRepository.findByFirebaseUid(firebaseUserInfo.uid())
                 .orElseGet(() -> {
                     User newUser = User.createNewUser(
                             firebaseUserInfo.uid(),
@@ -34,6 +34,11 @@ public class UserService {
                     );
                     return userRepository.save(newUser);
                 });
+    }
+
+    public User findByFirebaseUid(String firebaseUid) {
+        return userRepository.findByFirebaseUid(firebaseUid)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 
     @Transactional

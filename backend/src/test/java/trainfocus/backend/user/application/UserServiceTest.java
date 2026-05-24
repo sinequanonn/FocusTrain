@@ -54,6 +54,26 @@ class UserServiceTest {
     }
 
     @Test
+    void firebaseUid로_유저_조회_성공() {
+        User user = User.createNewUser("uid-1", "a@b.com", "이름");
+        given(userRepository.findByFirebaseUid("uid-1")).willReturn(Optional.of(user));
+
+        User result = userService.findByFirebaseUid("uid-1");
+
+        assertThat(result).isEqualTo(user);
+    }
+
+    @Test
+    void firebaseUid로_유저_없으면_USER_NOT_FOUND_예외() {
+        given(userRepository.findByFirebaseUid("uid-999")).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> userService.findByFirebaseUid("uid-999"))
+                .isInstanceOf(BusinessException.class)
+                .satisfies(e -> assertThat(((BusinessException) e).getErrorCode())
+                        .isEqualTo(ErrorCode.USER_NOT_FOUND));
+    }
+
+    @Test
     void 닉네임_업데이트_성공() {
         User user = User.createNewUser("uid-1", "a@b.com", "기존닉네임");
         given(userRepository.existsByNickname("새닉네임")).willReturn(false);

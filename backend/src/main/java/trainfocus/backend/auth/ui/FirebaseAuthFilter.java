@@ -16,7 +16,6 @@ import trainfocus.backend.common.exception.BusinessException;
 import trainfocus.backend.common.exception.ErrorCode;
 import trainfocus.backend.common.ui.ErrorResponse;
 import trainfocus.backend.user.application.UserService;
-import trainfocus.backend.user.domain.User;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -27,7 +26,6 @@ import java.time.LocalDateTime;
 public class FirebaseAuthFilter extends OncePerRequestFilter {
 
     public static final String FIREBASE_USER_ATTRIBUTE = "firebaseUserInfo";
-    public static final String LOGIN_USER_ATTRIBUTE = "loginUser";
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final FirebaseAuthClient firebaseAuthClient;
@@ -57,9 +55,8 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
         String token = authHeader.substring(BEARER_PREFIX.length());
         try {
             FirebaseUserInfo userInfo = firebaseAuthClient.verifyToken(token);
-            User loginUser = userService.findOrCreateUser(userInfo);
+            userService.findOrCreateUser(userInfo);
             request.setAttribute(FIREBASE_USER_ATTRIBUTE, userInfo);
-            request.setAttribute(LOGIN_USER_ATTRIBUTE, loginUser);
             filterChain.doFilter(request, response);
         } catch (BusinessException e) {
             log.warn("인증 실패: {}", e.getMessage());

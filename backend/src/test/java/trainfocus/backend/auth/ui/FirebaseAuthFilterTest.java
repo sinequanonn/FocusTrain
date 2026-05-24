@@ -67,7 +67,7 @@ class FirebaseAuthFilterTest {
     }
 
     @Test
-    void 유효한_토큰이면_User_보장_후_attribute_설정_하고_다음_필터로_진행() throws Exception {
+    void 유효한_토큰이면_User_보장_후_FIREBASE_USER_ATTRIBUTE_설정_하고_다음_필터로_진행() throws Exception {
         FirebaseUserInfo info = new FirebaseUserInfo("uid-1", "a@b.com", "이름");
         User loginUser = UserFixture.withId(1L);
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/sessions");
@@ -79,7 +79,7 @@ class FirebaseAuthFilterTest {
         filter.doFilterInternal(request, response, filterChain);
 
         assertThat(request.getAttribute(FirebaseAuthFilter.FIREBASE_USER_ATTRIBUTE)).isEqualTo(info);
-        assertThat(request.getAttribute(FirebaseAuthFilter.LOGIN_USER_ATTRIBUTE)).isEqualTo(loginUser);
+        then(userService).should().findOrCreateUser(info);
         then(filterChain).should().doFilter(request, response);
     }
 
