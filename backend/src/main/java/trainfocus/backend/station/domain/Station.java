@@ -35,6 +35,7 @@ public class Station extends BaseEntity {
     private BigDecimal longitude;
 
     private Station(String name, BigDecimal latitude, BigDecimal longitude) {
+        validateCoordinate(latitude, longitude);
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
