@@ -164,3 +164,37 @@ export async function getSessionHistoryDetail(
     `/api/sessions/${sessionId}/detail`
   );
 }
+
+export interface AdminSessionResponse {
+  id: number;
+  userId: number;
+  userNickname: string;
+  userEmail: string;
+  departureStationName: string;
+  arrivalStationName: string;
+  status: 'RUNNING' | 'PAUSED';
+  startedAt: string;
+  plannedEndAt: string;
+  totalTargetMinutes: number;
+}
+
+export interface AdminSessionsPageResponse {
+  sessions: AdminSessionResponse[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+}
+
+export async function getAdminSessions(args: {
+  page?: number;
+  size?: number;
+}): Promise<AdminSessionsPageResponse> {
+  const params = new URLSearchParams();
+  if (args.page !== undefined) params.set('page', String(args.page));
+  if (args.size !== undefined) params.set('size', String(args.size));
+  const qs = params.toString();
+  return apiClient<AdminSessionsPageResponse>(
+    `/api/admin/sessions${qs ? `?${qs}` : ''}`
+  );
+}

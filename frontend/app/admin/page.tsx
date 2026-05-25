@@ -80,6 +80,15 @@ export default function AdminHomePage() {
               <span className="text-xs text-gray-400 dark:text-gray-500">/admin/routes</span>
             </Link>
           </li>
+          <li>
+            <Link
+              href="/admin/sessions"
+              className="flex items-center justify-between rounded-2xl border border-gray-100 px-4 py-3 transition hover:border-[#2AC1BC] hover:text-[#2AC1BC] dark:border-gray-700"
+            >
+              <span className="font-bold text-gray-800 dark:text-gray-100">진행 중 세션</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">/admin/sessions</span>
+            </Link>
+          </li>
         </ul>
       </section>
 
@@ -89,8 +98,8 @@ export default function AdminHomePage() {
         </h2>
         <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
           <li>· #25 역 등록/수정 (완료)</li>
-          <li>· #26 노선 등록/수정/삭제 (진행 중)</li>
-          <li>· #27 진행 중 세션 조회</li>
+          <li>· #26 노선 등록/수정/삭제 (완료)</li>
+          <li>· #27 진행 중 세션 조회 (진행 중)</li>
           <li>· #28 관리자 대시보드 통계</li>
         </ul>
       </section>
