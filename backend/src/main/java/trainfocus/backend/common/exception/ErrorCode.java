@@ -35,6 +35,8 @@ public enum ErrorCode {
     // ROUTE
     ROUTE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 노선이 등록되어 있지 않습니다."),
     ROUTE_SAME_STATION(HttpStatus.BAD_REQUEST, "출발역과 도착역이 같을 수 없습니다."),
+    ROUTE_DUPLICATE(HttpStatus.CONFLICT, "이미 등록된 노선입니다."),
+    ROUTE_DURATION_NOT_POSITIVE(HttpStatus.BAD_REQUEST, "노선 소요 시간은 양수여야 합니다."),
 
     // SESSION
     SESSION_ALREADY_ACTIVE(HttpStatus.CONFLICT, "이미 활성화된 집중 세션이 존재합니다."),
