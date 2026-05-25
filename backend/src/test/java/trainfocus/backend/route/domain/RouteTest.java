@@ -45,7 +45,7 @@ class RouteTest {
         assertThatThrownBy(() -> Route.createNewRoute(departure, arrival, invalid))
                 .isInstanceOf(BusinessException.class)
                 .satisfies(e -> assertThat(((BusinessException) e).getErrorCode())
-                        .isEqualTo(ErrorCode.COMMON_INVALID_PARAMETER));
+                        .isEqualTo(ErrorCode.ROUTE_DURATION_NOT_POSITIVE));
     }
 
     @Test
@@ -56,7 +56,7 @@ class RouteTest {
         assertThatThrownBy(() -> Route.createNewRoute(departure, arrival, null))
                 .isInstanceOf(BusinessException.class)
                 .satisfies(e -> assertThat(((BusinessException) e).getErrorCode())
-                        .isEqualTo(ErrorCode.COMMON_INVALID_PARAMETER));
+                        .isEqualTo(ErrorCode.ROUTE_DURATION_NOT_POSITIVE));
     }
 
     @Test

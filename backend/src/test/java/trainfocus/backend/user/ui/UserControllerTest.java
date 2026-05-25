@@ -53,7 +53,7 @@ class UserControllerTest {
     @Test
     void 닉네임_업데이트_성공_200() throws Exception {
         given(userService.updateNickname(any(UpdateNicknameRequest.class), any(User.class)))
-                .willReturn(new MeResponse(1L, "1@test.com", "새닉네임", null, null, null));
+                .willReturn(new MeResponse(1L, "1@test.com", "새닉네임", "NORMAL",  null, null, null));
 
         mockMvc.perform(patch("/api/users/me")
                         .header("Authorization", BEARER)
