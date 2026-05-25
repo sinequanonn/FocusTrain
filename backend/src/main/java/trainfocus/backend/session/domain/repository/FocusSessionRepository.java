@@ -10,6 +10,7 @@ import trainfocus.backend.session.domain.FocusSession;
 import trainfocus.backend.session.domain.FocusSessionStatus;
 import trainfocus.backend.user.domain.User;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -39,4 +40,8 @@ public interface FocusSessionRepository extends JpaRepository<FocusSession, Long
     Page<FocusSession> findActiveForAdmin(
             @Param("statuses") Collection<FocusSessionStatus> statuses,
             Pageable pageable);
+
+    long countByStatusIn(Collection<FocusSessionStatus> statuses);
+
+    long countByStartedAtGreaterThanEqual(LocalDateTime startedAtFrom);
 }
