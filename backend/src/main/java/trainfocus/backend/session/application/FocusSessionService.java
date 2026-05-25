@@ -3,9 +3,11 @@ package trainfocus.backend.session.application;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import trainfocus.backend.admin.application.dto.AdminSessionsPageResponse;
 import trainfocus.backend.common.exception.BusinessException;
 import trainfocus.backend.common.exception.ErrorCode;
 import trainfocus.backend.route.domain.Route;
@@ -147,6 +149,11 @@ public class FocusSessionService {
         return FocusSessionHistoryDetailResponse.from(session);
     }
 
+    public AdminSessionsPageResponse findActivesForAdmin(Pageable pageable) {
+        Page<FocusSession> page = focusSessionRepository.findActiveForAdmin(
+                List.of(FocusSessionStatus.RUNNING, FocusSessionStatus.PAUSED), pageable);
+        return AdminSessionsPageResponse.from(page);
+    }
 
     private FocusSession findOwnedSession(User user, Long sessionId) {
         FocusSession session = focusSessionRepository.findById(sessionId)

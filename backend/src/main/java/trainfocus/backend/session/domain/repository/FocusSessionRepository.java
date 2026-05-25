@@ -25,4 +25,18 @@ public interface FocusSessionRepository extends JpaRepository<FocusSession, Long
     @EntityGraph(attributePaths = {"legs", "departureStation", "arrivalStation"})
     @Query("SELECT fs from FocusSession fs where fs.id = :id")
     Optional<FocusSession> findDetailById(@Param("id") Long id);
+
+    @EntityGraph(attributePaths = {"user", "departureStation", "arrivalStation"})
+    @Query(value = """
+            SELECT fs FROM FocusSession fs
+            WHERE fs.status IN :statuses
+            ORDER BY fs.startedAt ASC
+            """,
+            countQuery = """
+                    SELECT COUNT(fs) FROM FocusSession fs
+                    WHERE fs.status IN :statuses
+                    """)
+    Page<FocusSession> findActiveForAdmin(
+            @Param("statuses") Collection<FocusSessionStatus> statuses,
+            Pageable pageable);
 }
