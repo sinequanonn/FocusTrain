@@ -29,6 +29,8 @@ public enum ErrorCode {
 
     // STATION
     STATION_NOT_FOUND(HttpStatus.NOT_FOUND, "역을 찾을 수 없습니다."),
+    STATION_NAME_DUPLICATE(HttpStatus.CONFLICT, "이미 등록된 역 이름입니다."),
+    STATION_COORDINATE_OUT_OF_RANGE(HttpStatus.BAD_REQUEST, "좌표가 한반도 범위를 벗어났습니다."),
 
     // ROUTE
     ROUTE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 노선이 등록되어 있지 않습니다."),
