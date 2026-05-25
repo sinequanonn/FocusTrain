@@ -57,12 +57,29 @@ export default function AdminHomePage() {
         )}
       </section>
 
+      <section className="mb-6 rounded-3xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+        <h2 className="mb-3 text-sm font-bold uppercase text-gray-400 dark:text-gray-500">
+          관리 메뉴
+        </h2>
+        <ul className="space-y-2 text-sm">
+          <li>
+            <Link
+              href="/admin/stations"
+              className="flex items-center justify-between rounded-2xl border border-gray-100 px-4 py-3 transition hover:border-[#2AC1BC] hover:text-[#2AC1BC] dark:border-gray-700"
+            >
+              <span className="font-bold text-gray-800 dark:text-gray-100">역 관리</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">/admin/stations</span>
+            </Link>
+          </li>
+        </ul>
+      </section>
+
       <section className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
         <h2 className="mb-3 text-sm font-bold uppercase text-gray-400 dark:text-gray-500">
           Epic C 진행 예정
         </h2>
         <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-          <li>· #25 역 등록/수정</li>
+          <li>· #25 역 등록/수정 (진행 중)</li>
           <li>· #26 노선 등록/삭제</li>
           <li>· #27 진행 중 세션 조회</li>
           <li>· #28 관리자 대시보드 통계</li>
