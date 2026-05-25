@@ -138,19 +138,31 @@ class FocusSessionControllerTest {
     @Test
     void 세션_완료_200() throws Exception {
         given(focusSessionService.complete(any(), eq(100L)))
-                .willReturn(new FocusSessionEndedResponse(100L, "COMPLETED", 1800, NOW, NOW.plusMinutes(30)));
+                .willReturn(new FocusSessionEndedResponse(100L,
+                        "COMPLETED",
+                        1800,
+                        NOW,
+                        NOW.plusMinutes(30),
+                        7L, "부산"));
 
         mockMvc.perform(post("/api/sessions/100/complete")
                         .header("Authorization", BEARER))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.status").value("COMPLETED"))
-                .andExpect(jsonPath("$.data.totalFocusSeconds").value(1800));
+                .andExpect(jsonPath("$.data.totalFocusSeconds").value(1800))
+                .andExpect(jsonPath("$.data.newDepartureStationId").value(7L))
+                .andExpect(jsonPath("$.data.newDepartureStationName").value("부산"));;
     }
 
     @Test
     void 세션_중단_200() throws Exception {
         given(focusSessionService.abort(any(), eq(100L)))
-                .willReturn(new FocusSessionEndedResponse(100L, "ABORTED", 600, NOW, NOW.plusMinutes(10)));
+                .willReturn(new FocusSessionEndedResponse(100L,
+                        "ABORTED",
+                        600,
+                        NOW,
+                        NOW.plusMinutes(10),
+                        7L, "부산"));
 
         mockMvc.perform(post("/api/sessions/100/abort")
                         .header("Authorization", BEARER))

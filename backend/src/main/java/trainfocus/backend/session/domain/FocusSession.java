@@ -129,6 +129,7 @@ public class FocusSession extends BaseEntity {
         }
         this.status = FocusSessionStatus.COMPLETED;
         this.endedAt = now;
+        this.user.updateDepartureStation(this.arrivalStation);
     }
 
     public void abort(LocalDateTime now) {
@@ -200,6 +201,7 @@ public class FocusSession extends BaseEntity {
         currentLeg().end(reachTime);
         this.status = FocusSessionStatus.COMPLETED;
         this.endedAt = reachTime;
+        this.user.updateDepartureStation(this.arrivalStation);
     }
 
     private Leg currentLeg() {

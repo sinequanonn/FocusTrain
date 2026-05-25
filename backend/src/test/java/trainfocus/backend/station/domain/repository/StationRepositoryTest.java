@@ -66,4 +66,21 @@ class StationRepositoryTest {
         assertThat(saved.getCreatedAt()).isNotNull();
         assertThat(saved.getUpdatedAt()).isNotNull();
     }
+
+    @Test
+    void existsByName_등록된_이름이면_true_아니면_false() {
+        stationRepository.save(StationFixture.withName("강남"));
+
+        assertThat(stationRepository.existsByName("강남")).isTrue();
+        assertThat(stationRepository.existsByName("없는역")).isFalse();
+    }
+
+    @Test
+    void existsByNameAndIdNot_자기_자신은_제외() {
+        Station gangnam = stationRepository.save(StationFixture.withName("강남"));
+        Station seoul = stationRepository.save(StationFixture.withName("서울역"));
+
+        assertThat(stationRepository.existsByNameAndIdNot("강남", gangnam.getId())).isFalse();
+        assertThat(stationRepository.existsByNameAndIdNot("강남", seoul.getId())).isTrue();
+    }
 }

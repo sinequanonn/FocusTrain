@@ -9,7 +9,9 @@ public record FocusSessionEndedResponse(
         String status,
         Integer totalFocusSeconds,
         LocalDateTime startedAt,
-        LocalDateTime endedAt
+        LocalDateTime endedAt,
+        Long newDepartureStationId,
+        String newDepartureStationName
 ) {
     public static FocusSessionEndedResponse from(FocusSession session) {
         return new FocusSessionEndedResponse(
@@ -17,7 +19,9 @@ public record FocusSessionEndedResponse(
                 session.getStatus().name(),
                 session.accumulatedSeconds(),
                 session.getStartedAt(),
-                session.getEndedAt()
+                session.getEndedAt(),
+                session.getArrivalStation().getId(),
+                session.getArrivalStation().getName()
         );
     }
 }

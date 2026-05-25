@@ -8,4 +8,8 @@ import java.util.List;
 public interface StationRepository extends JpaRepository<Station, Long> {
 
     List<Station> findAllByOrderByNameAsc();
+
+    boolean existsByName(String name);
+
+    boolean existsByNameAndIdNot(String name, Long id);
 }

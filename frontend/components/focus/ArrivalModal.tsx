@@ -6,6 +6,7 @@ interface Props {
   accumulatedSeconds: number;
   totalTargetSeconds: number;
   auto: boolean;
+  newDepartureName: string | null;
   onClose: () => void;
 }
 
@@ -23,6 +24,7 @@ export function ArrivalModal({
   accumulatedSeconds,
   totalTargetSeconds,
   auto,
+  newDepartureName,
   onClose,
 }: Props) {
   if (!open) return null;
@@ -53,6 +55,14 @@ export function ArrivalModal({
               {auto && ' · 자동 도착'}
             </p>
           </div>
+
+          {newDepartureName && (
+            <p className="mb-4 text-xs text-gray-500 dark:text-gray-400">
+              다음 출발역이{' '}
+              <span className="font-bold text-[#2AC1BC]">{newDepartureName}</span>
+              으로 변경됐어요
+            </p>
+          )}
 
           <button
             onClick={onClose}

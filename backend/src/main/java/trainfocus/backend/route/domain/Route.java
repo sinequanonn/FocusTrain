@@ -41,9 +41,7 @@ public class Route extends BaseEntity {
                 && departureStation.getId().equals(arrivalStation.getId())) {
             throw new BusinessException(ErrorCode.ROUTE_SAME_STATION);
         }
-        if (durationMinutes == null || durationMinutes <= 0) {
-            throw new BusinessException(ErrorCode.COMMON_INVALID_PARAMETER);
-        }
+        validateDurationMinutes(durationMinutes);
         this.departureStation = departureStation;
         this.arrivalStation = arrivalStation;
         this.durationMinutes = durationMinutes;
@@ -51,5 +49,16 @@ public class Route extends BaseEntity {
 
     public static Route createNewRoute(Station departureStation, Station arrivalStation, Integer durationMinutes) {
         return new Route(departureStation, arrivalStation, durationMinutes);
+    }
+
+    public void updateDurationMinutes(Integer durationMinutes) {
+        validateDurationMinutes(durationMinutes);
+        this.durationMinutes = durationMinutes;
+    }
+
+    private void validateDurationMinutes(Integer durationMinutes) {
+        if (durationMinutes == null || durationMinutes <= 0) {
+            throw new BusinessException(ErrorCode.ROUTE_DURATION_NOT_POSITIVE);
+        }
     }
 }

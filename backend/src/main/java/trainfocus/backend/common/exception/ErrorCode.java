@@ -14,6 +14,7 @@ public enum ErrorCode {
     AUTH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다. 다시 로그인해주세요."),
     AUTH_EMAIL_REQUIRED(HttpStatus.BAD_REQUEST, "이메일 정보가 필요합니다. Google 계정 권한을 확인해주세요."),
     AUTH_FIREBASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "인증 서비스에 일시적 문제가 발생했습니다."),
+    AUTH_FORBIDDEN_ADMIN_ONLY(HttpStatus.FORBIDDEN, "관리자만 접근할 수 있습니다."),
 
     // USER
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
@@ -28,10 +29,14 @@ public enum ErrorCode {
 
     // STATION
     STATION_NOT_FOUND(HttpStatus.NOT_FOUND, "역을 찾을 수 없습니다."),
+    STATION_NAME_DUPLICATE(HttpStatus.CONFLICT, "이미 등록된 역 이름입니다."),
+    STATION_COORDINATE_OUT_OF_RANGE(HttpStatus.BAD_REQUEST, "좌표가 한반도 범위를 벗어났습니다."),
 
     // ROUTE
     ROUTE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 노선이 등록되어 있지 않습니다."),
     ROUTE_SAME_STATION(HttpStatus.BAD_REQUEST, "출발역과 도착역이 같을 수 없습니다."),
+    ROUTE_DUPLICATE(HttpStatus.CONFLICT, "이미 등록된 노선입니다."),
+    ROUTE_DURATION_NOT_POSITIVE(HttpStatus.BAD_REQUEST, "노선 소요 시간은 양수여야 합니다."),
 
     // SESSION
     SESSION_ALREADY_ACTIVE(HttpStatus.CONFLICT, "이미 활성화된 집중 세션이 존재합니다."),
