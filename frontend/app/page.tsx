@@ -61,6 +61,7 @@ export default function HomePage() {
     accumulatedSeconds: number;
     totalTargetSeconds: number;
     auto: boolean;
+    newDepartureName: string | null;
   } | null>(null);
   // 자동 도착 한 세션 1회 보장 — 세션 바뀌면 리셋
   const autoCompletedRef = useRef(false);
@@ -255,13 +256,15 @@ export default function HomePage() {
     if (!session) return;
     setBusy(true);
     try {
-      await completeSession(session.sessionId);
+      const res = await completeSession(session.sessionId);
+      applyDepartureChange(res.newDepartureStationId, res.newDepartureStationName);
       // 모달 띄우고 닫을 때 booking 으로 복귀
       setArrivalInfo({
         arrivalName: session.arrival.name,
         accumulatedSeconds,
         totalTargetSeconds: session.totalTargetSeconds,
         auto: false,
+        newDepartureName: res.newDepartureStationName,
       });
     } catch (e) {
       handleError(e);
@@ -274,12 +277,14 @@ export default function HomePage() {
     if (!session) return;
     setBusy(true);
     try {
-      await completeSession(session.sessionId);
+      const res = await completeSession(session.sessionId);
+      applyDepartureChange(res.newDepartureStationId, res.newDepartureStationName);
       setArrivalInfo({
         arrivalName: session.arrival.name,
         accumulatedSeconds: session.totalTargetSeconds, // 도달 시점 기준 cap
         totalTargetSeconds: session.totalTargetSeconds,
         auto: true,
+        newDepartureName: res.newDepartureStationName,
       });
     } catch (e) {
       // 실패해도 ref 유지 — 무한 재시도 방지. 사용자가 수동 도착 버튼으로 재시도 가능.
@@ -287,6 +292,19 @@ export default function HomePage() {
     } finally {
       setBusy(false);
     }
+  }
+
+  function applyDepartureChange(
+    newId: number | null,
+    newName: string | null
+  ) {
+    if (newId === null || newName === null) return;
+    setMe((prev) =>
+      prev
+        ? { ...prev, departureStationId: newId, departureStationName: newName }
+        : prev
+    );
+    setDepartureId(String(newId));
   }
 
   function handleArrivalModalClose() {
@@ -474,6 +492,7 @@ export default function HomePage() {
           accumulatedSeconds={arrivalInfo.accumulatedSeconds}
           totalTargetSeconds={arrivalInfo.totalTargetSeconds}
           auto={arrivalInfo.auto}
+          newDepartureName={arrivalInfo.newDepartureName}
           onClose={handleArrivalModalClose}
         />
       )}

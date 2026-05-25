@@ -34,6 +34,8 @@ export interface FocusSessionEndedResponse {
   totalFocusSeconds: number;
   startedAt: string;
   endedAt: string;
+  newDepartureStationId: number | null;
+  newDepartureStationName: string | null;
 }
 
 export interface FocusSessionDetailResponse {
