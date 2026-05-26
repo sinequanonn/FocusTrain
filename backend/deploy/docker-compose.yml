@@ -44,8 +44,27 @@ services:
     networks:
       - focustrain
 
+  mysqld-exporter:
+    image: prom/mysqld-exporter:v0.15.1
+    container_name: focustrain-mysqld-exporter
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    command:
+      - "--mysqld.address=mysql:3306"
+      - "--mysqld.username=mysqld_exporter"
+      - "--collect.info_schema.tables"
+    environment:
+      MYSQLD_EXPORTER_PASSWORD: ${MYSQL_EXPORTER_PASSWORD}
+    ports:
+      - "9104:9104"
+    networks:
+      - focustrain
+
 networks:
   focustrain:
 
 volumes:
   mysql_data:
+
