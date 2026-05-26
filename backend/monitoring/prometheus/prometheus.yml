@@ -14,3 +14,10 @@ scrape_configs:
         labels:
           application: 'focustrain-backend'
           env: 'local'
+
+  - job_name: 'mysql-exporter'
+    static_configs:
+      - targets: ['host.docker.internal:9104']
+        labels:
+          application: 'focustrain-mysql'
+          env: 'local'
