@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import trainfocus.backend.auth.application.dto.MeResponse;
-import trainfocus.backend.auth.firebase.FirebaseUserInfo;
 import trainfocus.backend.common.exception.BusinessException;
 import trainfocus.backend.common.exception.ErrorCode;
 import trainfocus.backend.station.domain.Station;
@@ -22,19 +21,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final StationRepository stationRepository;
-
-    @Transactional
-    public User findOrCreateUser(FirebaseUserInfo firebaseUserInfo) {
-        return userRepository.findByFirebaseUid(firebaseUserInfo.uid())
-                .orElseGet(() -> {
-                    User newUser = User.createNewUser(
-                            firebaseUserInfo.uid(),
-                            firebaseUserInfo.email(),
-                            firebaseUserInfo.name()
-                    );
-                    return userRepository.save(newUser);
-                });
-    }
 
     public User findByFirebaseUid(String firebaseUid) {
         return userRepository.findByFirebaseUid(firebaseUid)
