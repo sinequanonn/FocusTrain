@@ -16,8 +16,6 @@ import trainfocus.backend.auth.firebase.FirebaseUserInfo;
 import trainfocus.backend.common.exception.BusinessException;
 import trainfocus.backend.common.exception.ErrorCode;
 import trainfocus.backend.user.application.UserService;
-import trainfocus.backend.user.domain.User;
-import trainfocus.backend.user.domain.UserFixture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.*;
@@ -41,7 +39,7 @@ class FirebaseAuthFilterTest {
         ObjectMapper objectMapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        filter = new FirebaseAuthFilter(firebaseAuthClient, userService, objectMapper);
+        filter = new FirebaseAuthFilter(firebaseAuthClient, objectMapper);
     }
 
     @Test
@@ -67,19 +65,16 @@ class FirebaseAuthFilterTest {
     }
 
     @Test
-    void 유효한_토큰이면_User_보장_후_FIREBASE_USER_ATTRIBUTE_설정_하고_다음_필터로_진행() throws Exception {
+    void 유효한_토큰이면_FIREBASE_USER_ATTRIBUTE_설정하고_다음_필터로_진행() throws Exception {
         FirebaseUserInfo info = new FirebaseUserInfo("uid-1", "a@b.com", "이름");
-        User loginUser = UserFixture.withId(1L);
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/sessions");
         request.addHeader("Authorization", "Bearer valid-token");
         MockHttpServletResponse response = new MockHttpServletResponse();
         given(firebaseAuthClient.verifyToken("valid-token")).willReturn(info);
-        given(userService.findOrCreateUser(info)).willReturn(loginUser);
 
         filter.doFilterInternal(request, response, filterChain);
 
         assertThat(request.getAttribute(FirebaseAuthFilter.FIREBASE_USER_ATTRIBUTE)).isEqualTo(info);
-        then(userService).should().findOrCreateUser(info);
         then(filterChain).should().doFilter(request, response);
     }
 
@@ -102,6 +97,13 @@ class FirebaseAuthFilterTest {
         MockHttpServletRequest request = new MockHttpServletRequest("POST", "/api/auth/login");
 
         assertThat(filter.shouldNotFilter(request)).isTrue();
+    }
+
+    @Test
+    void 회원가입_경로는_필터_적용() {
+        MockHttpServletRequest request = new MockHttpServletRequest("POST", "/api/auth/signup");
+
+        assertThat(filter.shouldNotFilter(request)).isFalse();
     }
 
     @Test
