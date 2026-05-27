@@ -25,6 +25,13 @@ export async function login(idToken: string): Promise<LoginResponse> {
   });
 }
 
+export async function signUp(nickname: string): Promise<LoginResponse> {
+  return apiClient<LoginResponse>('/api/auth/signup', {
+    method: 'POST',
+    body: JSON.stringify({ nickname }),
+  });
+}
+
 export async function getMe(): Promise<MeResponse> {
   return apiClient<MeResponse>('/api/auth/me');
 }

@@ -15,7 +15,6 @@ import trainfocus.backend.auth.firebase.FirebaseUserInfo;
 import trainfocus.backend.common.exception.BusinessException;
 import trainfocus.backend.common.exception.ErrorCode;
 import trainfocus.backend.common.ui.ErrorResponse;
-import trainfocus.backend.user.application.UserService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -29,7 +28,6 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final FirebaseAuthClient firebaseAuthClient;
-    private final UserService userService;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -55,7 +53,6 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
         String token = authHeader.substring(BEARER_PREFIX.length());
         try {
             FirebaseUserInfo userInfo = firebaseAuthClient.verifyToken(token);
-            userService.findOrCreateUser(userInfo);
             request.setAttribute(FIREBASE_USER_ATTRIBUTE, userInfo);
             filterChain.doFilter(request, response);
         } catch (BusinessException e) {
