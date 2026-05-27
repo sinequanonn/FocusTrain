@@ -77,4 +77,16 @@ class UserRepositoryTest {
     void 없는_닉네임이면_false_반환() {
         assertThat(userRepository.existsByNickname("없는닉네임")).isFalse();
     }
+
+    @Test
+    void 존재하는_firebaseUid면_existsByFirebaseUid_true() {
+        userRepository.save(User.createNewUser("uid-exist", "exist@b.com", "있음"));
+
+        assertThat(userRepository.existsByFirebaseUid("uid-exist")).isTrue();
+    }
+
+    @Test
+    void 없는_firebaseUid면_existsByFirebaseUid_false() {
+        assertThat(userRepository.existsByFirebaseUid("uid-없음")).isFalse();
+    }
 }

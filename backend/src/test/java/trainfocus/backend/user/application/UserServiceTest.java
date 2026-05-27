@@ -6,7 +6,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import trainfocus.backend.auth.application.dto.MeResponse;
-import trainfocus.backend.auth.firebase.FirebaseUserInfo;
 import trainfocus.backend.common.exception.BusinessException;
 import trainfocus.backend.common.exception.ErrorCode;
 import trainfocus.backend.user.application.dto.UpdateNicknameRequest;
@@ -27,31 +26,6 @@ class UserServiceTest {
 
     @InjectMocks
     UserService userService;
-
-    @Test
-    void 이미_가입된_유저는_저장_없이_반환() {
-        FirebaseUserInfo info = new FirebaseUserInfo("uid-1", "a@b.com", "이름");
-        User existing = User.createNewUser("uid-1", "a@b.com", "이름");
-        given(userRepository.findByFirebaseUid("uid-1")).willReturn(Optional.of(existing));
-
-        User result = userService.findOrCreateUser(info);
-
-        assertThat(result).isEqualTo(existing);
-        then(userRepository).should(never()).save(any());
-    }
-
-    @Test
-    void 신규_유저면_저장_후_반환() {
-        FirebaseUserInfo info = new FirebaseUserInfo("uid-2", "new@b.com", "신규");
-        User saved = User.createNewUser("uid-2", "new@b.com", "신규");
-        given(userRepository.findByFirebaseUid("uid-2")).willReturn(Optional.empty());
-        given(userRepository.save(any())).willReturn(saved);
-
-        User result = userService.findOrCreateUser(info);
-
-        assertThat(result.getFirebaseUid()).isEqualTo("uid-2");
-        then(userRepository).should().save(any(User.class));
-    }
 
     @Test
     void firebaseUid로_유저_조회_성공() {

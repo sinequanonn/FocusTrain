@@ -92,8 +92,6 @@ class AdminStationControllerTest {
     private void bindAuth() {
         given(firebaseAuthClient.verifyToken("valid"))
                 .willReturn(new FirebaseUserInfo("uid-1", "a@b.com", "관리자"));
-        given(userService.findOrCreateUser(any(FirebaseUserInfo.class)))
-                .willReturn(UserFixture.withId(1L));
         given(userService.findByFirebaseUid("uid-1"))
                 .willReturn(UserFixture.withId(1L));
     }

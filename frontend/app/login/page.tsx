@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signInWithGoogle, getIdToken } from '@/lib/firebase/auth';
 import { login as backendLogin } from '@/lib/api/auth';
+import { ApiError } from '@/lib/api/client';
 import { useAuth } from '@/lib/hooks/useAuth';
 
 export default function LoginPage() {
@@ -26,6 +27,10 @@ export default function LoginPage() {
       await backendLogin(idToken);
       router.replace('/');
     } catch (e) {
+      if (e instanceof ApiError && e.errorCode === 'USER_NOT_FOUND') {
+        router.replace('/signup');
+        return;
+      }
       setError(e instanceof Error ? e.message : '로그인 실패');
     } finally {
       setSubmitting(false);
